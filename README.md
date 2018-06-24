@@ -3,7 +3,7 @@
 [![npm downloads](https://img.shields.io/npm/dt/file-replace-loader.svg?style=flat-square)](https://www.npmjs.com/package/file-replace-loader)
 [![license](https://img.shields.io/github/license/vyushin/file-replace-loader.svg?style=flat-square)](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)
 
-file-replace-loader is webpack loader that allows you replace files in compile time
+file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
 ## Usage
 
@@ -11,16 +11,19 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 //webpack.config.js
 
 module: {
-rules: [{
-  test: /\.config.js$/,
-  loader: 'file-replace-loader',
-  options: {
-    condition: 'if-replacement-exist',
-    replacement: resolve('./config.local.js')
-  }
-}]
+  rules: [{
+    test: /\.config.js$/,
+    loader: 'file-replace-loader',
+    options: {
+      condition: 'if-replacement-exists',
+      replacement: resolve('./config.local.js')
+    }
+  }]
 }
 ```
+
+This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file,
+if replacement exists (condition `if-replacement-exists`).
 
 ## Installation
 

@@ -26,7 +26,7 @@ LOADER_REPLACEMENT_CONDITIONS[0] = false; // Equivalent to "never"
 LOADER_REPLACEMENT_CONDITIONS[1] = true; // Equivalent to "always"
 LOADER_REPLACEMENT_CONDITIONS[2] = 'always';
 LOADER_REPLACEMENT_CONDITIONS[3] = 'never';
-LOADER_REPLACEMENT_CONDITIONS[4] = 'if-replacement-exist';
+LOADER_REPLACEMENT_CONDITIONS[4] = 'if-replacement-exists';
 LOADER_REPLACEMENT_CONDITIONS[5] = 'if-source-is-empty';
 
 /**
@@ -133,7 +133,7 @@ module.exports = function(source) {
   }
 
   /**
-   * If condition is 'if-replacement-exist'
+   * If condition is 'if-replacement-exists'
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[4]) {
     if (fs.existsSync(options.replacement)) {
