@@ -27,8 +27,10 @@ if replacement exists (condition `if-replacement-exists`).
 
 ## Options
 
-| condition | Condition to replace | `enum` | default: 'if-replacement-exists' |
-| replacement | Replacement file | `string` | required |
+Key          | Description          | Type          | Required       | Default               | Possible values
+------------ | -------------        | ------------- | -------------  | -------------         | -------------
+`condition`  | Condition to replace | enum          | false          | if-replacement-exists | true
+`replacement`| Replacement file     | string        | true           | none                  | Full path to file
 
 ## Installation
 
