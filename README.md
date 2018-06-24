@@ -25,6 +25,11 @@ module: {
 This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file,
 if replacement exists (condition `if-replacement-exists`).
 
+## Options
+
+| condition | Condition to replace | `enum` | default: 'if-replacement-exists' |
+| replacement | Replacement file | `string` | required |
+
 ## Installation
 
 ###### NPM

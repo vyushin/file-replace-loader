@@ -38,7 +38,7 @@ const LOADER_OPTIONS_SCHEMA = {
   properties: {
     condition: {
       enum: LOADER_REPLACEMENT_CONDITIONS,
-      default: LOADER_REPLACEMENT_CONDITIONS[1],
+      default: LOADER_REPLACEMENT_CONDITIONS[4],
       errorMessages: {
         enum: `should be equal to one of the allowed values: [${LOADER_REPLACEMENT_CONDITIONS.join(', ')}]`
       }
