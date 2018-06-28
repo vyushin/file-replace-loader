@@ -29,10 +29,11 @@ if replacement exists (condition `if-replacement-exists`).
 
 ## Options
 
-Key          | Description          | Type          | Required       | Default               | Possible values
------------- | -------------        | ------------- | -------------  | -------------         | -------------
-`condition`  | Condition to replace | enum          | false          | if-replacement-exists | true, false, always, never, if-replacement-exists, if-source-is-empty
-`replacement`| Replacement file     | string        | true           | none                  | Full path to file
+Key          | Description                | Type          | Required       | Default               | Possible values
+------------ | -------------              | ------------- | -------------  | -------------         | -------------
+`condition`  | Condition to replace       | enum          | no             | if-replacement-exists | true, false, always, never, if-replacement-exists, if-source-is-empty
+`replacement`| Replacement file           | string        | yes            | —                     | Full path to file
+`async`      | Asynchronous file reading  | boolean       | no             | `true`                | `true`, `false`
 
 ## Installation
 
