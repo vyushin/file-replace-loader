@@ -9,16 +9,18 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 
 ```javascript
 //webpack.config.js
-
-module: {
-  rules: [{
-    test: /\.config.js$/,
-    loader: 'file-replace-loader',
-    options: {
-      condition: 'if-replacement-exists',
-      replacement: resolve('./config.local.js')
-    }
-  }]
+module.exports = {
+  //...
+  module: {
+    rules: [{
+      test: /\.config.js$/,
+      loader: 'file-replace-loader',
+      options: {
+        condition: 'if-replacement-exists',
+        replacement: resolve('./config.local.js')
+      }
+    }]
+  }
 }
 ```
 

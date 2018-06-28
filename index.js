@@ -4,10 +4,10 @@ const path = require('path');
 const fs = require('fs');
 
 /**
- * Usually ised in read file functions
+ * Usually used in read file functions
  * @const
  */
-const ENCODING = 'UTF-8';
+const ENCODING = 'utf8';
 
 /**
  * Loader name
@@ -20,6 +20,7 @@ const LOADER_NAME = 'file-replace-loader';
  * These modes have to use in loader options in webpack config.
  * Array indexing helps using this array like enum type during code is writing
  * @const
+ * @enum
  */
 const LOADER_REPLACEMENT_CONDITIONS = [];
 LOADER_REPLACEMENT_CONDITIONS[0] = false; // Equivalent to "never"
@@ -45,6 +46,10 @@ const LOADER_OPTIONS_SCHEMA = {
     },
     replacement: {
       type: 'string',
+    },
+    async: {
+      type: 'boolean',
+      default: true
     }
   },
   additionalProperties: false,
@@ -61,10 +66,19 @@ const LOADER_OPTIONS_SCHEMA = {
   }
 };
 
+/**
+ * Error types that using in error messages
+ * @const
+ * @enum
+ */
 const ERROR_TYPES = [];
 ERROR_TYPES[0] = 'Invalid options';
 ERROR_TYPES[1] = 'Replacement error';
+ERROR_TYPES[2] = 'File reading error';
 
+/**
+ * Custom exception formatted to the loader format
+ */
 function Exception(options) {
   const defaultOptions = { name: `\n[${LOADER_NAME}]` };
   Object.assign(this, defaultOptions, options);
@@ -74,6 +88,11 @@ function Exception(options) {
 }
 Exception.prototype = Object.create(Error.prototype);
 
+/**
+ * Format schema error to the loader format
+ * @param {Object} e Error object
+ * @return {Object}
+ */
 function prepareErrorSchemaMessage(e) {
   let message = '';
   e.errors && e.errors.forEach((error) => {
@@ -87,8 +106,28 @@ function prepareErrorSchemaMessage(e) {
   return e;
 }
 
+/**
+ * Wrapped readFileSync
+ * @param {String} path Path to file
+ * @return {String} File content
+ */
 function readFileSync(path) {
   return fs.readFileSync(path, { encoding: ENCODING, flag: 'r' });
+}
+
+/**
+ * Wrapped readFileS
+ * @param {String} path Path to file
+ * @param {Function} callback
+ */
+function readFile(path, callback) {
+  return fs.readFile(path, ENCODING, (err, content) => {
+    err && new Exception({
+      title: ERROR_TYPES[2],
+      message: err.message
+    });
+    callback(content);
+  });
 }
 
 function getOptions(loaderContext) {
@@ -103,6 +142,8 @@ function getOptions(loaderContext) {
  */
 module.exports = function(source) {
   const options = getOptions(this);
+  const isSync = options && options.async === false;
+  const callback = isSync === false && this.async() || null;
 
   /**
    * Validate loader options before its work
@@ -120,7 +161,13 @@ module.exports = function(source) {
       options.condition === LOADER_REPLACEMENT_CONDITIONS[2]) {
     if (fs.existsSync(options.replacement)) {
       this.addDependency(options.replacement);
-      return readFileSync(options.replacement);
+      if (isSync) {
+        return readFileSync(options.replacement);
+      } else {
+        readFile(options.replacement, (content) => {
+          callback(null, content);
+        })
+      }
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
@@ -138,8 +185,18 @@ module.exports = function(source) {
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[4]) {
     if (fs.existsSync(options.replacement)) {
       this.addDependency(options.replacement);
-      return readFileSync(options.replacement);
+      if (isSync) {
+        return readFileSync(options.replacement)
+      } else {
+        readFile(options.replacement, (content) => {
+          callback(null, content);
+        })
+      }
     }
+    /**
+     * We don't need any errors here, because it isn't error when replacement doesn't exist by
+     * condition 'if-replacement-exists'
+     */
   }
 
   /**
@@ -150,7 +207,19 @@ module.exports = function(source) {
       const stats = fs.statSync(this.resourcePath);
       if (stats.size === 0) {
         this.addDependency(options.replacement);
-        return readFileSync(options.replacement);
+        if (isSync) {
+          return readFileSync(options.replacement)
+        } else {
+          readFile(options.replacement, (content) => {
+            callback(null, content);
+          })
+        }
+      } else {
+        if (isSync) {
+          return source;
+        } else {
+          callback(null, source);
+        }
       }
     } else {
       throw new Exception({
@@ -162,7 +231,14 @@ module.exports = function(source) {
   }
 
   /**
-   * If condition is 'never' or false and by default
+   * If condition is 'never' or false
    */
-  return source;
+  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[0] ||
+    options.condition === LOADER_REPLACEMENT_CONDITIONS[3]) {
+    if (isSync) {
+      return source;
+    } else {
+      callback(null, source);
+    }
+  }
 };
