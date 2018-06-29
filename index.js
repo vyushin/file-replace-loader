@@ -1,70 +1,24 @@
+/**
+ * Main file of file replace loader
+ * {@link https://github.com/vyushin/file-replace-loader/blob/master/index.js}
+ */
+
 const loaderUtils = require('loader-utils');
 const validateOptions = require('schema-utils');
 const path = require('path');
 const fs = require('fs');
+const CONSTANTS = require('./constants');
+
+const ENCODING = CONSTANTS.ENCODING;
+const LOADER_NAME = CONSTANTS.LOADER_NAME;
+const LOADER_REPLACEMENT_CONDITIONS = CONSTANTS.LOADER_REPLACEMENT_CONDITIONS;
+const LOADER_OPTIONS_SCHEMA = CONSTANTS.LOADER_OPTIONS_SCHEMA;
+const ERROR_TYPES = CONSTANTS.ERROR_TYPES;
+const ERROR_MESSAGES = CONSTANTS.ERROR_MESSAGES;
 
 /**
- * Usually ised in read file functions
- * @const
+ * Custom exception formatted to the loader format
  */
-const ENCODING = 'UTF-8';
-
-/**
- * Loader name
- * @const
- */
-const LOADER_NAME = 'file-replace-loader';
-
-/**
- * Loader replacement conditions
- * These modes have to use in loader options in webpack config.
- * Array indexing helps using this array like enum type during code is writing
- * @const
- */
-const LOADER_REPLACEMENT_CONDITIONS = [];
-LOADER_REPLACEMENT_CONDITIONS[0] = false; // Equivalent to "never"
-LOADER_REPLACEMENT_CONDITIONS[1] = true; // Equivalent to "always"
-LOADER_REPLACEMENT_CONDITIONS[2] = 'always';
-LOADER_REPLACEMENT_CONDITIONS[3] = 'never';
-LOADER_REPLACEMENT_CONDITIONS[4] = 'if-replacement-exists';
-LOADER_REPLACEMENT_CONDITIONS[5] = 'if-source-is-empty';
-
-/**
- * Schema for validate loader options
- * @const
- */
-const LOADER_OPTIONS_SCHEMA = {
-  type: 'object',
-  properties: {
-    condition: {
-      enum: LOADER_REPLACEMENT_CONDITIONS,
-      default: LOADER_REPLACEMENT_CONDITIONS[4],
-      errorMessages: {
-        enum: `should be equal to one of the allowed values: [${LOADER_REPLACEMENT_CONDITIONS.join(', ')}]`
-      }
-    },
-    replacement: {
-      type: 'string',
-    }
-  },
-  additionalProperties: false,
-  required: ['replacement'],
-  getDefaultOptions() {
-    const result = {};
-    Object.keys(this.properties).forEach((key) => {
-      result[key] = this.properties[key].default;
-    });
-    return result;
-  },
-  getProperty(key) {
-    return this.properties[key];
-  }
-};
-
-const ERROR_TYPES = [];
-ERROR_TYPES[0] = 'Invalid options';
-ERROR_TYPES[1] = 'Replacement error';
-
 function Exception(options) {
   const defaultOptions = { name: `\n[${LOADER_NAME}]` };
   Object.assign(this, defaultOptions, options);
@@ -74,6 +28,11 @@ function Exception(options) {
 }
 Exception.prototype = Object.create(Error.prototype);
 
+/**
+ * Format schema error to the loader format
+ * @param {Object} e Error object
+ * @return {Object}
+ */
 function prepareErrorSchemaMessage(e) {
   let message = '';
   e.errors && e.errors.forEach((error) => {
@@ -87,8 +46,27 @@ function prepareErrorSchemaMessage(e) {
   return e;
 }
 
-function readFileSync(path) {
-  return fs.readFileSync(path, { encoding: ENCODING, flag: 'r' });
+/**
+ * Formatting info messages
+ * @param {String} message
+ * @return {String}
+ */
+function prepareInfoMessage(message) {
+  return `[${LOADER_NAME}] ${message}`;
+}
+
+function readFile(path, isAsync, callback) {
+  if (isAsync) {
+    return fs.readFile(path, ENCODING, (err, content) => {
+      err && new Exception({
+        title: ERROR_TYPES[2],
+        message: err.message
+      });
+      callback(content);
+    });
+  } else {
+    return fs.readFileSync(path, { encoding: ENCODING, flag: 'r' });
+  }
 }
 
 function getOptions(loaderContext) {
@@ -103,6 +81,8 @@ function getOptions(loaderContext) {
  */
 module.exports = function(source) {
   const options = getOptions(this);
+  const isAsync = options && options.async === true;
+  const callback = isAsync === true && this.async() || null;
 
   /**
    * Validate loader options before its work
@@ -120,14 +100,13 @@ module.exports = function(source) {
       options.condition === LOADER_REPLACEMENT_CONDITIONS[2]) {
     if (fs.existsSync(options.replacement)) {
       this.addDependency(options.replacement);
-      return readFileSync(options.replacement);
+      return isAsync
+        ? readFile(options.replacement, true, (content) => { callback(null, content) })
+        : readFile(options.replacement, false);
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
-        message: `File (${options.replacement}) doesn't exist but specified in ${LOADER_NAME} options with \n` +
-                 `  condition ${LOADER_REPLACEMENT_CONDITIONS[1]} or '${LOADER_REPLACEMENT_CONDITIONS[2]}'. \n` +
-                 `  Perhaps this is due replacement isn't full path. Make sure that file exists and replacement\n` +
-                 `  option is full path to file`
+        message: ERROR_MESSAGES[0].replace('$1', options.replacement),
       });
     }
   }
@@ -138,31 +117,43 @@ module.exports = function(source) {
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[4]) {
     if (fs.existsSync(options.replacement)) {
       this.addDependency(options.replacement);
-      return readFileSync(options.replacement);
+      return isAsync
+        ? readFile(options.replacement, true, (content) => { callback(null, content) })
+        : readFile(options.replacement, false);
     }
+    /**
+     * We don't need any errors here, because it isn't error when replacement doesn't exist by
+     * condition 'if-replacement-exists'
+     */
   }
 
   /**
    * If condition is 'if-source-is-empty'
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[5]) {
-    if (fs.existsSync(this.resourcePath)) {
+    if (fs.existsSync(options.replacement)) {
       const stats = fs.statSync(this.resourcePath);
       if (stats.size === 0) {
         this.addDependency(options.replacement);
-        return readFileSync(options.replacement);
+        return isAsync
+          ? readFile(options.replacement, true, (content) => { callback(null, content) })
+          : readFile(options.replacement, false);
+      } else {
+        return isAsync ? callback(null, source) : source;
       }
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
-        message: `File (${this.resourcePath}) doesn't exist but specified in sources. ${LOADER_NAME} can't replace\n` +
-                 `  it to replacement file by '${LOADER_REPLACEMENT_CONDITIONS[5]}' condition. Make sure that source file exists.`
+        message: ERROR_MESSAGES[1].replace('$1', options.replacement),
       });
     }
   }
 
   /**
-   * If condition is 'never' or false and by default
+   * If condition is 'never' or false
    */
-  return source;
+  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[0] ||
+      options.condition === LOADER_REPLACEMENT_CONDITIONS[3]) {
+    return isAsync ? callback(null, source) : source;
+  }
 };

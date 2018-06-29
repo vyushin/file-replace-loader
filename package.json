@@ -1,6 +1,6 @@
 {
   "name": "file-replace-loader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "file-replace-loader is webpack loader that allows you replace files in compile time",
   "author": "Evgeny Vyushin <e@vyushin.ru> (https://www.vyushin.ru/)",
   "contributors": [
@@ -19,11 +19,12 @@
   "homepage": "https://github.com/vyushin/file-replace-loader",
   "main": "index.js",
   "scripts": {
-    "build_example": "cd ./example && webpack --config ./webpack.config.js",
-    "watch_example": "cd ./example && webpack --config ./webpack.config.js --watch"
+    "build_4x": "cd ./example && webpack --mode development --config ./webpack.config.js",
+    "build_3x": "cd ./example && webpack --config ./webpack.config.js"
   },
   "dependencies": {},
   "devDependencies": {
+    "schema-utils": "^0.4.5",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8"
   },

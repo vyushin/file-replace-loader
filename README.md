@@ -5,20 +5,30 @@
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
+### Features
+
+* Compatibility with webpack 3.x, 4.x
+* Replaces files which importing in compile time
+* Sync and Async modes
+* Compatibility with other loaders
+
 ## Usage
 
 ```javascript
 //webpack.config.js
-
-module: {
-  rules: [{
-    test: /\.config.js$/,
-    loader: 'file-replace-loader',
-    options: {
-      condition: 'if-replacement-exists',
-      replacement: resolve('./config.local.js')
-    }
-  }]
+module.exports = {
+  //...
+  module: {
+    rules: [{
+      test: /\.config.js$/,
+      loader: 'file-replace-loader',
+      options: {
+        condition: 'if-replacement-exists',
+        replacement: resolve('./config.local.js'),
+        async: true,
+      }
+    }]
+  }
 }
 ```
 
@@ -27,10 +37,22 @@ if replacement exists (condition `if-replacement-exists`).
 
 ## Options
 
-Key          | Description          | Type          | Required       | Default               | Possible values
------------- | -------------        | ------------- | -------------  | -------------         | -------------
-`condition`  | Condition to replace | enum          | false          | if-replacement-exists | true, false, always, never, if-replacement-exists, if-source-is-empty
-`replacement`| Replacement file     | string        | true           | none                  | Full path to file
+| Key                                   | Type            | Required       | Default                 | Possible values
+| ------------                          | -------------   | -------------  | -------------           | -------------
+| `condition`<br/>Condition to replace  | `enum`          | no             | `if-replacement-exists` | `true`,<br/>`false`,<br/>`always`,<br/>`never`,<br/>`if-replacement-exists`,<br/>`if-source-is-empty`
+| `replacement`<br/>Replacement file    | `string`        | yes            | —                       | Full path to file
+| `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
+
+## Contributing
+
+```bash
+git clone https://github.com/vyushin/file-replace-loader
+cd file-replace-loader/
+npm i
+npm run build_4x
+cd ./example/dist
+node ./script.js
+```
 
 ## Installation
 

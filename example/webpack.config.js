@@ -1,6 +1,12 @@
 const resolve = require('path').resolve;
 
 module.exports = {
+
+  output: {
+    filename: 'script.js',
+    path: resolve('./dist'),
+  },
+
   entry: {
     script: resolve('./index.js'),
   },
@@ -19,5 +25,4 @@ module.exports = {
     modules: ['node_modules', resolve('../../')]
   },
   target: 'node',
-  mode: 'development'
 };
