@@ -45,7 +45,7 @@ if replacement exists (condition `if-replacement-exists`).
 
 ## Contributing
 
-```
+```bash
 git clone https://github.com/vyushin/file-replace-loader
 cd file-replace-loader/
 npm i
