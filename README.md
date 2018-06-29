@@ -5,6 +5,13 @@
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
+### Features
+
+* Compatibility with webpack 3.x, 4.x
+* Replaces files which importing in compile time
+* Sync and Async modes
+* Compatibility with other loaders
+
 ## Usage
 
 ```javascript
@@ -17,7 +24,8 @@ module.exports = {
       loader: 'file-replace-loader',
       options: {
         condition: 'if-replacement-exists',
-        replacement: resolve('./config.local.js')
+        replacement: resolve('./config.local.js'),
+        async: true,
       }
     }]
   }
@@ -34,6 +42,17 @@ if replacement exists (condition `if-replacement-exists`).
 | `condition`<br/>Condition to replace  | `enum`          | no             | `if-replacement-exists` | `true`,<br/>`false`,<br/>`always`,<br/>`never`,<br/>`if-replacement-exists`,<br/>`if-source-is-empty`
 | `replacement`<br/>Replacement file    | `string`        | yes            | —                       | Full path to file
 | `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
+
+## Contributing
+
+```
+git clone https://github.com/vyushin/file-replace-loader
+cd file-replace-loader/
+npm i
+npm run build_4x
+cd ./dist
+node script.js
+```
 
 ## Installation
 
