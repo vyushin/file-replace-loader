@@ -31,7 +31,7 @@ if replacement exists (condition `if-replacement-exists`).
 
 | Key                                   | Type            | Required       | Default                 | Possible values
 | ------------                          | -------------   | -------------  | -------------           | -------------
-| `condition`<br/>Condition to replace  |        | `enum`          | no             | `if-replacement-exists` | `true`,<br/>`false`,<br/>`always`,<br/>`never`,<br/>`if-replacement-exists`,<br/>`if-source-is-empty`
+| `condition`<br/>Condition to replace  | `enum`          | no             | `if-replacement-exists` | `true`,<br/>`false`,<br/>`always`,<br/>`never`,<br/>`if-replacement-exists`,<br/>`if-source-is-empty`
 | `replacement`<br/>Replacement file    | `string`        | yes            | —                       | Full path to file
 | `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
 
