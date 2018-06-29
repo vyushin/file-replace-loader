@@ -50,8 +50,8 @@ git clone https://github.com/vyushin/file-replace-loader
 cd file-replace-loader/
 npm i
 npm run build_4x
-cd ./dist
-node script.js
+cd ./example/dist
+node ./script.js
 ```
 
 ## Installation
