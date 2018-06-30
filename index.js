@@ -11,6 +11,7 @@ const CONSTANTS = require('./constants');
 
 const ENCODING = CONSTANTS.ENCODING;
 const LOADER_NAME = CONSTANTS.LOADER_NAME;
+const MAIN_LOADER_FILE = CONSTANTS.MAIN_LOADER_FILE;
 const LOADER_REPLACEMENT_CONDITIONS = CONSTANTS.LOADER_REPLACEMENT_CONDITIONS;
 const LOADER_OPTIONS_SCHEMA = CONSTANTS.LOADER_OPTIONS_SCHEMA;
 const ERROR_TYPES = CONSTANTS.ERROR_TYPES;
@@ -37,7 +38,7 @@ function prepareErrorSchemaMessage(e) {
   let message = '';
   e.errors && e.errors.forEach((error) => {
     const dataPath = error.dataPath && error.dataPath.replace(/^\.+/, '') || '';
-    const property = LOADER_OPTIONS_SCHEMA.getProperty(dataPath);
+    const property = LOADER_OPTIONS_SCHEMA.properties[dataPath] || {};
     const errorMessages = property && property.errorMessages;
     message += `\n  [options.${dataPath}]: ${(errorMessages && errorMessages[error.keyword]) || error.message}`;
   });
@@ -70,7 +71,9 @@ function readFile(path, isAsync, callback) {
 }
 
 function getOptions(loaderContext) {
-  const defaultOptions = LOADER_OPTIONS_SCHEMA.getDefaultOptions();
+  const properties = Object.keys(LOADER_OPTIONS_SCHEMA.properties) || [];
+  const defaultOptions = {};
+  properties.forEach(key => defaultOptions[key] = LOADER_OPTIONS_SCHEMA.properties[key].default);
   const result = Object.assign({}, defaultOptions, loaderUtils.getOptions(loaderContext));
   result.replacement && (result.replacement = path.resolve(loaderContext.context, result.replacement));
   return result;
@@ -91,6 +94,21 @@ module.exports = function(source) {
     validateOptions(LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
     throw prepareErrorSchemaMessage(e);
+  }
+
+  /**
+   * Checking using with other loaders
+   */
+  if (this.loaders.length > 1) {
+    const firstLoader = this.loaders[this.loaders.length - 1];
+    const isFirst = firstLoader.path === MAIN_LOADER_FILE;
+
+    if (!isFirst) {
+      throw new Exception({
+        title: ERROR_TYPES[3],
+        message: ERROR_MESSAGES[3],
+      })
+    }
   }
 
   /**
