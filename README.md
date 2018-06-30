@@ -34,8 +34,7 @@ module.exports = {
 }
 ```
 
-This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file,
-if replacement exists (condition `if-replacement-exists`).
+This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file, <br/>if replacement exists (condition `if-replacement-exists`).
 
 After example build in bundle file will be some code from `config.local.js` and original sources
 won't changed.
@@ -47,10 +46,10 @@ File replace loader must executes before other loaders. It means that in webpack
 ```javascript
 //webpack.config.js
 
+// Correct
 module.exports = {
   //...
   module: {
-    // Correct
     rules: [{
       test: /\.config\.js$/,
       use: [{
@@ -68,16 +67,16 @@ module.exports = {
 }
 ```
 
-This is correct example. File replace loader will executed before other loaders.
+Above is correct example. File replace loader will executed before other loaders.
 Let's see inadmissible usage:
 
 ```javascript
 //webpack.config.js
 
+// Error, because file replace loader will be execute after other loaders
 module.exports = {
   //...
   module: {
-    // Error, because file replace loader will be execute after other loaders
     rules: [{
       test: /\.config\.js$/,
       use: [{
