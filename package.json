@@ -1,6 +1,6 @@
 {
   "name": "file-replace-loader",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "file-replace-loader is webpack loader that allows you replace files in compile time",
   "author": "Evgeny Vyushin <e@vyushin.ru> (https://www.vyushin.ru/)",
   "contributors": [
