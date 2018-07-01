@@ -1,6 +1,6 @@
 /**
- * Main file written on old JS for compatibility
- * {@link https://github.com/vyushin/file-replace-loader/blob/master/index.js}
+ * Transform source code to old JS for compatibility
+ * {@link https://github.com/vyushin/file-replace-loader/blob/master/transform.js}
  */
 
 console.time('time');
