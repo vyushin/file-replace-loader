@@ -34,7 +34,7 @@ var LOADER_NAME = 'file-replace-loader';
  * Main loader file from package.json
  * @const
  */
-var MAIN_LOADER_FILE = (0, _path.resolve)('../', packageJson.main);
+var MAIN_LOADER_FILE = (0, _path.resolve)(__dirname, '../', packageJson.main);
 
 /**
  * Loader replacement conditions

@@ -22,7 +22,7 @@ const LOADER_NAME = 'file-replace-loader';
  * Main loader file from package.json
  * @const
  */
-const MAIN_LOADER_FILE = resolve('../', packageJson.main);
+const MAIN_LOADER_FILE = resolve(__dirname, '../', packageJson.main);
 
 /**
  * Loader replacement conditions
