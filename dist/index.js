@@ -106,8 +106,6 @@ var _schemaUtils2 = _interopRequireDefault(_schemaUtils);
 
 var _path = require('path');
 
-var _path2 = _interopRequireDefault(_path);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -180,7 +178,7 @@ function getOptions(loaderContext) {
     return defaultOptions[key] = _constants.LOADER_OPTIONS_SCHEMA.properties[key].default;
   });
   var result = Object.assign({}, defaultOptions, _loaderUtils2.default.getOptions(loaderContext));
-  result.replacement && (result.replacement = _path2.default.resolve(loaderContext.context, result.replacement));
+  result.replacement && (result.replacement = (0, _path.resolve)(loaderContext.context, result.replacement));
   return result;
 }
 

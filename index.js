@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Main file of file-replace-loader
  */

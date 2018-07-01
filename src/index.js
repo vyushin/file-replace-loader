@@ -5,7 +5,7 @@
 
 import loaderUtils from 'loader-utils';
 import validateOptions from 'schema-utils';
-import path from 'path';
+import { resolve } from 'path';
 import fs from 'fs';
 import { ENCODING, LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
   LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES } from './constants';
@@ -68,7 +68,7 @@ function getOptions(loaderContext) {
   const defaultOptions = {};
   properties.forEach(key => defaultOptions[key] = LOADER_OPTIONS_SCHEMA.properties[key].default);
   const result = Object.assign({}, defaultOptions, loaderUtils.getOptions(loaderContext));
-  result.replacement && (result.replacement = path.resolve(loaderContext.context, result.replacement));
+  result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
   return result;
 }
 
