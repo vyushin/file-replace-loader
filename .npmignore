@@ -1,5 +1,9 @@
 .idea/
 node_modules/
 example/
+bin/
+src/
 .gitignore
 package-lock.json
+npm-debug.log
+transform.js

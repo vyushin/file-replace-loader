@@ -10,17 +10,21 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 * Compatibility with webpack 3.x, 4.x
 * Replaces files which importing in compile time
 * Sync and Async modes
+* Replaces files only in compile time, without changes source files
 * Compatibility with other loaders
 
 ## Usage
 
 ```javascript
 //webpack.config.js
+
+const resolve = require('path').resolve;
+
 module.exports = {
   //...
   module: {
     rules: [{
-      test: /\.config.js$/,
+      test: /\.config\.js$/,
       loader: 'file-replace-loader',
       options: {
         condition: 'if-replacement-exists',
@@ -32,14 +36,75 @@ module.exports = {
 }
 ```
 
-This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file,
-if replacement exists (condition `if-replacement-exists`).
+This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file, <br/>if replacement exists (condition `if-replacement-exists`).
 
-## Options
+After example build in bundle file will be some code from `config.local.js` and original sources
+won't changed.
+
+## Using with other loaders
+
+File replace loader must executes before other loaders. It means that in webpack config file the loader must be last in list. <br/>For example:
+
+```javascript
+//webpack.config.js
+
+const resolve = require('path').resolve;
+
+// Correct
+module.exports = {
+  //...
+  module: {
+    rules: [{
+      test: /\.config\.js$/,
+      use: [{
+        loader: 'babel-loader',
+      }, {
+        loader: 'file-replace-loader',
+        options: {
+          condition: 'if-replacement-exists',
+          replacement: resolve('./config.local.js'),
+          async: true,
+        }
+      }]
+    }]
+  },
+}
+```
+
+Above is correct example. File replace loader will executed before other loaders.
+<br/>Let's see incorrect usage:
+
+```javascript
+//webpack.config.js
+
+const resolve = require('path').resolve;
+
+// Error, because file replace loader will be execute after other loaders
+module.exports = {
+  //...
+  module: {
+    rules: [{
+      test: /\.config\.js$/,
+      use: [{
+        loader: 'file-replace-loader',
+        options: {
+          condition: 'if-replacement-exists',
+          replacement: resolve('./config.local.js'),
+          async: true,
+        }
+      }, {
+        loader: 'babel-loader',
+      }]
+    }]
+  },
+}
+```
+
+## Loader options
 
 | Key                                   | Type            | Required       | Default                 | Possible values
 | ------------                          | -------------   | -------------  | -------------           | -------------
-| `condition`<br/>Condition to replace  | `enum`          | no             | `if-replacement-exists` | `true`,<br/>`false`,<br/>`always`,<br/>`never`,<br/>`if-replacement-exists`,<br/>`if-source-is-empty`
+| `condition`<br/>Condition to replace  | `enum`          | no             | `'if-replacement-exists'` | `true`,<br/>`false`,<br/>`'always'`,<br/>`'never'`,<br/>`'if-replacement-exists'`,<br/>`'if-source-is-empty'`
 | `replacement`<br/>Replacement file    | `string`        | yes            | —                       | Full path to file
 | `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
 

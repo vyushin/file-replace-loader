@@ -14,11 +14,15 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
-      loader: 'file-replace-loader',
-      options: {
-        condition: 'if-source-is-empty',
-        replacement: resolve('./replacement.js')
-      }
+      use: [{
+        loader: 'babel-loader',
+      }, {
+        loader: 'file-replace-loader',
+        options: {
+          condition: 'if-source-is-empty',
+          replacement: resolve('./replacement.js')
+        }
+      }]
     }]
   },
   resolveLoader: {

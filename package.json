@@ -19,12 +19,20 @@
   "homepage": "https://github.com/vyushin/file-replace-loader",
   "main": "index.js",
   "scripts": {
+    "transform": "rm -rf ./dist && node ./transform.js",
+    "build": "npm run-script transform",
     "build_4x": "cd ./example && webpack --mode development --config ./webpack.config.js",
-    "build_3x": "cd ./example && webpack --config ./webpack.config.js"
+    "build_3x": "cd ./example && webpack --config ./webpack.config.js",
+    "prepublish": "npm run build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "loader-utils": "^1.1.0",
+    "schema-utils": "^0.4.5"
+  },
   "devDependencies": {
-    "schema-utils": "^0.4.5",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-loader": "^7.1.4",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8"
   },
