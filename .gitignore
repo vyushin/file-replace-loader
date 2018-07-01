@@ -1,4 +1,6 @@
 .idea/
 node_modules/
 example/dist/
+bin/
 package-lock.json
+npm-debug.log

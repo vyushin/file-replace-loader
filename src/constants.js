@@ -3,8 +3,8 @@
  * {@link https://github.com/vyushin/file-replace-loader/blob/master/constants.js}
  */
 
-const resolve = require('path').resolve;
-const package = require('./package.json');
+import { resolve } from 'path';
+import * as packageJson from '../package.json';
 
 /**
  * Usually used in read file functions
@@ -22,7 +22,7 @@ const LOADER_NAME = 'file-replace-loader';
  * Main loader file from package.json
  * @const
  */
-const MAIN_LOADER_FILE = resolve(__dirname, package.main);
+const MAIN_LOADER_FILE = resolve('../', packageJson.main);
 
 /**
  * Loader replacement conditions
@@ -55,18 +55,18 @@ ERROR_MESSAGES[0] = `File ($1) doesn't exist but specified in ${LOADER_NAME} opt
   `  condition ${LOADER_REPLACEMENT_CONDITIONS[1]} or '${LOADER_REPLACEMENT_CONDITIONS[2]}'. \n` +
   `  Perhaps this is due replacement isn't full path. Make sure that file exists and replacement\n` +
   `  option is full path to file.\n` +
-  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${package.bugs.url}`;
+  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
 
 ERROR_MESSAGES[1] = `File ($1) doesn't exist but specified in replacement. ${LOADER_NAME} can't replace\n` +
   `  it by '${LOADER_REPLACEMENT_CONDITIONS[5]}' condition. Make sure that replacement file exists. \n` +
-  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${package.bugs.url}`;
+  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
 
 ERROR_MESSAGES[2] = `should be equal to one of the allowed values: [$1]. \n` +
-  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${package.bugs.url}`;
+  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
 
 ERROR_MESSAGES[3] = `${LOADER_NAME} must executes before other loaders. Check your Webpack config file.\n` +
   `  NOTE: Webpack reads loaders from right to left. So ${LOADER_NAME} have to be the last in array of loaders. \n` +
-  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${package.bugs.url}`;
+  `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
 
 /**
  * Schema for validate loader options
@@ -94,10 +94,12 @@ const LOADER_OPTIONS_SCHEMA = {
   required: ['replacement'],
 };
 
-exports.ENCODING = ENCODING;
-exports.LOADER_NAME = LOADER_NAME;
-exports.MAIN_LOADER_FILE = MAIN_LOADER_FILE;
-exports.LOADER_REPLACEMENT_CONDITIONS = LOADER_REPLACEMENT_CONDITIONS;
-exports.LOADER_OPTIONS_SCHEMA = LOADER_OPTIONS_SCHEMA;
-exports.ERROR_TYPES = ERROR_TYPES;
-exports.ERROR_MESSAGES = ERROR_MESSAGES;
+export {
+  ENCODING,
+  LOADER_NAME,
+  MAIN_LOADER_FILE,
+  LOADER_REPLACEMENT_CONDITIONS,
+  LOADER_OPTIONS_SCHEMA,
+  ERROR_TYPES,
+  ERROR_MESSAGES
+}

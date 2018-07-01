@@ -18,6 +18,8 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 ```javascript
 //webpack.config.js
 
+const resolve = require('path').resolve;
+
 module.exports = {
   //...
   module: {
@@ -41,10 +43,12 @@ won't changed.
 
 ## Using with other loaders
 
-File replace loader must executes before other loaders. It means that in webpack config file the loader must be last in list. For example:
+File replace loader must executes before other loaders. It means that in webpack config file the loader must be last in list. <br/>For example:
 
 ```javascript
 //webpack.config.js
+
+const resolve = require('path').resolve;
 
 // Correct
 module.exports = {
@@ -68,10 +72,12 @@ module.exports = {
 ```
 
 Above is correct example. File replace loader will executed before other loaders.
-Let's see inadmissible usage:
+<br/>Let's see incorrect usage:
 
 ```javascript
 //webpack.config.js
+
+const resolve = require('path').resolve;
 
 // Error, because file replace loader will be execute after other loaders
 module.exports = {
