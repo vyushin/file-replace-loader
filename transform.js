@@ -1,48 +1,68 @@
 /**
- * Transform source code to old JS for compatibility
+ * Transform source code to old JS for more compatibility
  * {@link https://github.com/vyushin/file-replace-loader/blob/master/transform.js}
  */
 
 console.time('time');
-console.info('Transform file-replace-loader');
+console.info(`
+  _____                     __                      
+ |_   _| __ __ _ _ __  ___ / _| ___  _ __ _ __ ___  
+   | || '__/ _\` | '_ \\/ __| |_ / _ \\| '__| '_ \` _ \\ 
+   | || | | (_| | | | \\__ \\  _| (_) | |  | | | | | |
+   |_||_|  \\__,_|_| |_|___/_|  \\___/|_|  |_| |_| |_|                                              
+`);
 
-var path = require('path');
-var babel = require('babel-core');
-var fs = require('fs');
+const { resolve, basename } = require('path');
+const babel = require('babel-core');
+const fs = require('fs');
 
-var TRANSFORM_OPTIONS = {
+const TARGET_NODE_VERSION = '4.3.0';
+
+/**
+ * Transform BABEL options
+ * @const
+ */
+const TRANSFORM_OPTIONS = {
   env: 'development',
   sourceType: 'module',
   sourceMaps: false,
   babelrc: false,
   comments: true,
   minified: false,
-  presets: [
-    [
-      'babel-preset-env',
-      {
-        options: {
-          targets: {
-            node: '4.3.0',
-            uglify: false,
-          },
-        }
+  presets: [[
+    'babel-preset-env',
+    {
+      options: {
+        targets: {
+          node: TARGET_NODE_VERSION,
+          uglify: false,
+        },
       }
-    ]
+    }]
   ]
 };
 
-var SOURCES = [
-  path.resolve('./src/index.js'),
-  path.resolve('./src/constants.js'),
+/**
+ * Files which will be transformed
+ * @const
+ */
+const SOURCES = [
+  resolve('./src/index.js'),
+  resolve('./src/constants.js'),
 ];
 
-fs.mkdirSync('./dist');
+/**
+ * Destination directory
+ * @const
+ */
+const DIST_DIR = resolve('./dist');
 
-console.info('Transform files:\n  ' + SOURCES.join('\n  '));
-SOURCES.forEach(function(source) {
-  var data = babel.transformFileSync(source, TRANSFORM_OPTIONS).code;
-  fs.writeFileSync('./dist/' + path.basename(source), data);
+fs.mkdirSync(DIST_DIR);
+
+console.info(`Transform files for Node.js v${TARGET_NODE_VERSION}:\n  ${SOURCES.join(',\n  ')}`);
+SOURCES.forEach((source) => {
+  const data = babel.transformFileSync(source, TRANSFORM_OPTIONS).code;
+  fs.writeFileSync(resolve(DIST_DIR, basename(source)), data);
 });
 
 console.log('\nTRANSFORM SUCCESSFUL!');
