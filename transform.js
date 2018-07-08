@@ -1,5 +1,5 @@
 /**
- * Transform source code to old JS for more compatibility
+ * Transform source code of file-replace-loader to old JS for more compatibility
  * {@link https://github.com/vyushin/file-replace-loader/blob/master/transform.js}
  */
 
@@ -16,6 +16,10 @@ const { resolve, basename } = require('path');
 const babel = require('babel-core');
 const fs = require('fs');
 
+/**
+ * Target code must be compatible with this Node.js version
+ * @const
+ */
 const TARGET_NODE_VERSION = '4.3.0';
 
 /**
@@ -61,9 +65,9 @@ fs.mkdirSync(DIST_DIR);
 
 console.info(`Transform files for Node.js v${TARGET_NODE_VERSION}:\n  ${SOURCES.join(',\n  ')}`);
 SOURCES.forEach((source) => {
-  const data = babel.transformFileSync(source, TRANSFORM_OPTIONS).code;
-  fs.writeFileSync(resolve(DIST_DIR, basename(source)), data);
+  const { code } = babel.transformFileSync(source, TRANSFORM_OPTIONS);
+  fs.writeFileSync(resolve(DIST_DIR, basename(source)), code);
 });
 
-console.log('\nTRANSFORM SUCCESSFUL!');
+console.info('\nTRANSFORM SUCCESSFUL!');
 console.timeEnd('time');
