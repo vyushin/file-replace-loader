@@ -81,6 +81,24 @@ function getOptions(loaderContext) {
 }
 
 /**
+ * Checks the condition by compliance
+ * @param {String} condition
+ * @return {Proof}
+ */
+function condition(condition) {
+  function Proof(condition) {
+    this.oneOf = function() {
+      const args = Array.from(arguments || []);
+      return args.some(arg => arg === condition);
+    };
+    this.is = function() {
+      return condition === arguments[0];
+    };
+  }
+  return new Proof(condition);
+}
+
+/**
  * File Replace Loader function
  */
 export default function(source) {
@@ -117,8 +135,7 @@ export default function(source) {
   /**
    * If condition is 'always' or true
    */
-  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[1] ||
-    options.condition === LOADER_REPLACEMENT_CONDITIONS[2]) {
+  if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[1], LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
     if (existsSync(options.replacement)) {
       progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
@@ -137,7 +154,7 @@ export default function(source) {
   /**
    * If condition is 'if-replacement-exists'
    */
-  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[4]) {
+  if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress(`Trying replace by condition '${options.condition}'`);
     if (existsSync(options.replacement)) {
       progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
@@ -155,7 +172,7 @@ export default function(source) {
   /**
    * If condition is 'if-source-is-empty'
    */
-  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[5]) {
+  if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress(`Trying replace by condition '${options.condition}'`);
     if (existsSync(options.replacement)) {
       const stat = statSync(this.resourcePath);
@@ -180,8 +197,7 @@ export default function(source) {
   /**
    * If condition is 'never' or false
    */
-  if (options.condition === LOADER_REPLACEMENT_CONDITIONS[0] ||
-    options.condition === LOADER_REPLACEMENT_CONDITIONS[3]) {
+  if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[0], LOADER_REPLACEMENT_CONDITIONS[3])) {
     progress(`Skip replacement because condition is '${options.condition}'`);
     return isAsync ? callback(null, source) : source;
   }

@@ -38,7 +38,7 @@ exports.default = function (source) {
   /**
    * If condition is 'always' or true
    */
-  if (options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[1] || options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[2]) {
+  if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[1], _constants.LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress('Trying replace by condition \'' + options.condition + '\'');
     if ((0, _fs.existsSync)(options.replacement)) {
       progress('Replace [' + this.resourcePath + '] -> [' + options.replacement + ']');
@@ -57,7 +57,7 @@ exports.default = function (source) {
   /**
    * If condition is 'if-replacement-exists'
    */
-  if (options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[4]) {
+  if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress('Trying replace by condition \'' + options.condition + '\'');
     if ((0, _fs.existsSync)(options.replacement)) {
       progress('Replace [' + this.resourcePath + '] -> [' + options.replacement + ']');
@@ -75,7 +75,7 @@ exports.default = function (source) {
   /**
    * If condition is 'if-source-is-empty'
    */
-  if (options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[5]) {
+  if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress('Trying replace by condition \'' + options.condition + '\'');
     if ((0, _fs.existsSync)(options.replacement)) {
       var stat = (0, _fs.statSync)(this.resourcePath);
@@ -100,7 +100,7 @@ exports.default = function (source) {
   /**
    * If condition is 'never' or false
    */
-  if (options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[0] || options.condition === _constants.LOADER_REPLACEMENT_CONDITIONS[3]) {
+  if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[0], _constants.LOADER_REPLACEMENT_CONDITIONS[3])) {
     progress('Skip replacement because condition is \'' + options.condition + '\'');
     return isAsync ? callback(null, source) : source;
   }
@@ -196,6 +196,26 @@ function getOptions(loaderContext) {
   var result = Object.assign({}, defaultOptions, _loaderUtils2.default.getOptions(loaderContext));
   result.replacement && (result.replacement = (0, _path.resolve)(loaderContext.context, result.replacement));
   return result;
+}
+
+/**
+ * Checks the condition by compliance
+ * @param {String} condition
+ * @return {Proof}
+ */
+function condition(condition) {
+  function Proof(condition) {
+    this.oneOf = function () {
+      var args = Array.from(arguments || []);
+      return args.some(function (arg) {
+        return arg === condition;
+      });
+    };
+    this.is = function () {
+      return condition === arguments[0];
+    };
+  }
+  return new Proof(condition);
 }
 
 /**
