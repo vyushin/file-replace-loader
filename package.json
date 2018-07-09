@@ -21,8 +21,8 @@
   "scripts": {
     "transform": "rm -rf ./dist && node ./transform.js",
     "build": "npm run-script transform",
-    "build_4x": "cd ./example && webpack --mode development --config ./webpack.config.js",
-    "build_3x": "cd ./example && webpack --config ./webpack.config.js",
+    "build_4x": "cd ./example && webpack --mode development --config ./webpack.config.js --progress",
+    "build_3x": "cd ./example && webpack --config ./webpack.config.js --progress",
     "prepublish": "npm run build"
   },
   "dependencies": {

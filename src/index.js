@@ -1,14 +1,14 @@
 /**
  * File replace loader script
- * {@link https://github.com/vyushin/file-replace-loader/blob/master/file-replace-loader.js}
+ * {@link https://github.com/vyushin/file-replace-loader/blob/master/src/index.js}
  */
 
 import loaderUtils from 'loader-utils';
 import validateOptions from 'schema-utils';
 import { resolve } from 'path';
-import fs from 'fs';
+import { readFile as readFileAsync, readFileSync, existsSync, statSync } from 'fs';
 import { ENCODING, LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
-  LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES } from './constants';
+  LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES, IS_PROGRESS_MODE } from './constants';
 
 /**
  * Custom exception formatted to the loader format
@@ -41,17 +41,25 @@ function prepareErrorSchemaMessage(e) {
 }
 
 /**
- * Formatting info messages
- * @param {String} message
- * @return {String}
+ * Progress function wrapper
  */
-function prepareInfoMessage(message) {
-  return `[${LOADER_NAME}] ${message}`;
-}
+const progress = function() {
+  if (IS_PROGRESS_MODE !== true) return () => {};
+  let isFirstMessage = true;
+  /**
+   * Print progress message
+   * @param {String} message
+   */
+  return (message) => {
+    const newLine = isFirstMessage === true && '\n' || '';
+    console.info(`${newLine}[${LOADER_NAME}]: ${message}`);
+    isFirstMessage = false;
+  };
+}();
 
 function readFile(path, isAsync, callback) {
   if (isAsync) {
-    return fs.readFile(path, ENCODING, (err, content) => {
+    return readFileAsync(path, ENCODING, (err, content) => {
       err && new Exception({
         title: ERROR_TYPES[2],
         message: err.message
@@ -59,7 +67,7 @@ function readFile(path, isAsync, callback) {
       callback(content);
     });
   } else {
-    return fs.readFileSync(path, { encoding: ENCODING, flag: 'r' });
+    return readFileSync(path, { encoding: ENCODING, flag: 'r' });
   }
 }
 
@@ -84,6 +92,7 @@ export default function(source) {
    * Validate loader options before its work
    */
   try {
+    progress(`Validate options`);
     validateOptions(LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
     throw prepareErrorSchemaMessage(e);
@@ -93,6 +102,7 @@ export default function(source) {
    * Checking using with other loaders
    */
   if (this.loaders.length > 1) {
+    progress(`Checking using with other loaders`);
     const firstLoader = this.loaders[this.loaders.length - 1];
     const isNotFirst = firstLoader.path !== MAIN_LOADER_FILE;
 
@@ -109,7 +119,9 @@ export default function(source) {
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[1] ||
     options.condition === LOADER_REPLACEMENT_CONDITIONS[2]) {
-    if (fs.existsSync(options.replacement)) {
+    progress(`Trying replace by condition '${options.condition}'`);
+    if (existsSync(options.replacement)) {
+      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
       this.addDependency(options.replacement);
       return isAsync
         ? readFile(options.replacement, true, (content) => { callback(null, content) })
@@ -126,7 +138,9 @@ export default function(source) {
    * If condition is 'if-replacement-exists'
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[4]) {
-    if (fs.existsSync(options.replacement)) {
+    progress(`Trying replace by condition '${options.condition}'`);
+    if (existsSync(options.replacement)) {
+      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
       this.addDependency(options.replacement);
       return isAsync
         ? readFile(options.replacement, true, (content) => { callback(null, content) })
@@ -142,14 +156,17 @@ export default function(source) {
    * If condition is 'if-source-is-empty'
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[5]) {
-    if (fs.existsSync(options.replacement)) {
-      const stats = fs.statSync(this.resourcePath);
-      if (stats.size === 0) {
+    progress(`Trying replace by condition '${options.condition}'`);
+    if (existsSync(options.replacement)) {
+      const stat = statSync(this.resourcePath);
+      if (stat.size === 0) {
+        progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
         this.addDependency(options.neplacement);
         return isAsync
           ? readFile(options.replacement, true, (content) => { callback(null, content) })
           : readFile(options.replacement, false);
       } else {
+        progress(`Skip replacement because source file [${this.resourcePath}] is not empty`);
         return isAsync ? callback(null, source) : source;
       }
     } else {
@@ -165,6 +182,7 @@ export default function(source) {
    */
   if (options.condition === LOADER_REPLACEMENT_CONDITIONS[0] ||
     options.condition === LOADER_REPLACEMENT_CONDITIONS[3]) {
+    progress(`Skip replacement because condition is '${options.condition}'`);
     return isAsync ? callback(null, source) : source;
   }
 };

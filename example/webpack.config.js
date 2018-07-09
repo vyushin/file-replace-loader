@@ -1,4 +1,4 @@
-const resolve = require('path').resolve;
+const { resolve } = require('path');
 
 module.exports = {
 
@@ -26,7 +26,7 @@ module.exports = {
     }]
   },
   resolveLoader: {
-    modules: ['node_modules']
+    modules: ['node_modules', resolve('../../')]
   },
   target: 'node',
 };
