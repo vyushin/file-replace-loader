@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IS_PROGRESS_MODE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = exports.ENCODING = undefined;
+exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = exports.ENCODING = undefined;
 
 var _path = require('path');
 
@@ -105,6 +105,14 @@ var IS_PROGRESS_MODE = (process.argv || []).some(function (arg) {
   return arg === '--progress';
 });
 
+/**
+ * True if the build runs with --debug arg
+ * @const
+ */
+var IS_DEBUG_MODE = (process.argv || []).some(function (arg) {
+  return arg === '--debug';
+});
+
 exports.ENCODING = ENCODING;
 exports.LOADER_NAME = LOADER_NAME;
 exports.MAIN_LOADER_FILE = MAIN_LOADER_FILE;
@@ -113,3 +121,4 @@ exports.LOADER_OPTIONS_SCHEMA = LOADER_OPTIONS_SCHEMA;
 exports.ERROR_TYPES = ERROR_TYPES;
 exports.ERROR_MESSAGES = ERROR_MESSAGES;
 exports.IS_PROGRESS_MODE = IS_PROGRESS_MODE;
+exports.IS_DEBUG_MODE = IS_DEBUG_MODE;

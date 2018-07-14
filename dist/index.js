@@ -160,7 +160,7 @@ function prepareErrorSchemaMessage(e) {
  * Progress function wrapper
  */
 var progress = function () {
-  if (_constants.IS_PROGRESS_MODE !== true) return function () {};
+  if (_constants.IS_PROGRESS_MODE !== true && _constants.IS_DEBUG_MODE !== true) return function () {};
   var isFirstMessage = true;
   /**
    * Print progress message

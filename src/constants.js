@@ -100,6 +100,12 @@ const LOADER_OPTIONS_SCHEMA = {
  */
 const IS_PROGRESS_MODE = (process.argv || []).some(arg => arg === '--progress');
 
+/**
+ * True if the build runs with --debug arg
+ * @const
+ */
+const IS_DEBUG_MODE = (process.argv || []).some(arg => arg === '--debug');
+
 export {
   ENCODING,
   LOADER_NAME,
@@ -108,5 +114,6 @@ export {
   LOADER_OPTIONS_SCHEMA,
   ERROR_TYPES,
   ERROR_MESSAGES,
-  IS_PROGRESS_MODE
+  IS_PROGRESS_MODE,
+  IS_DEBUG_MODE,
 }

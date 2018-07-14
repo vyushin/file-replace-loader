@@ -8,7 +8,7 @@ import validateOptions from 'schema-utils';
 import { resolve } from 'path';
 import { readFile as readFileAsync, readFileSync, existsSync, statSync } from 'fs';
 import { ENCODING, LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
-  LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES, IS_PROGRESS_MODE } from './constants';
+  LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES, IS_PROGRESS_MODE, IS_DEBUG_MODE } from './constants';
 
 /**
  * Custom exception formatted to the loader format
@@ -44,7 +44,7 @@ function prepareErrorSchemaMessage(e) {
  * Progress function wrapper
  */
 const progress = function() {
-  if (IS_PROGRESS_MODE !== true) return () => {};
+  if (IS_PROGRESS_MODE !== true && IS_DEBUG_MODE !== true) return () => {};
   let isFirstMessage = true;
   /**
    * Print progress message
