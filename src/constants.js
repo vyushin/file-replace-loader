@@ -1,6 +1,6 @@
 /**
  * Constants of file replace loader
- * {@link https://github.com/vyushin/file-replace-loader/blob/master/constants.js}
+ * {@link https://github.com/vyushin/file-replace-loader/blob/master/src/constants.js}
  */
 
 import { resolve } from 'path';
@@ -94,6 +94,18 @@ const LOADER_OPTIONS_SCHEMA = {
   required: ['replacement'],
 };
 
+/**
+ * True if the build runs with --progress arg
+ * @const
+ */
+const IS_PROGRESS_MODE = (process.argv || []).some(arg => arg === '--progress');
+
+/**
+ * True if the build runs with --debug arg
+ * @const
+ */
+const IS_DEBUG_MODE = (process.argv || []).some(arg => arg === '--debug');
+
 export {
   ENCODING,
   LOADER_NAME,
@@ -101,5 +113,7 @@ export {
   LOADER_REPLACEMENT_CONDITIONS,
   LOADER_OPTIONS_SCHEMA,
   ERROR_TYPES,
-  ERROR_MESSAGES
+  ERROR_MESSAGES,
+  IS_PROGRESS_MODE,
+  IS_DEBUG_MODE,
 }

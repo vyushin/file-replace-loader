@@ -21,8 +21,10 @@
   "scripts": {
     "transform": "rm -rf ./dist && node ./transform.js",
     "build": "npm run-script transform",
-    "build_4x": "cd ./example && webpack --mode development --config ./webpack.config.js",
-    "build_3x": "cd ./example && webpack --config ./webpack.config.js",
+    "prebuild_example_wp_4x": "npm run-script transform",
+    "build_example_wp_4x": "cd ./example && webpack --mode development --config ./webpack.config.js",
+    "prebuild_example_wp_3x": "npm run-script transform",
+    "build_example_wp_3x": "cd ./example && webpack --config ./webpack.config.js --progress",
     "prepublish": "npm run build"
   },
   "dependencies": {
