@@ -83,7 +83,7 @@ const LOADER_OPTIONS_SCHEMA = {
       }
     },
     replacement: {
-      type: 'string',
+        instanceof: 'Function'
     },
     async: {
       type: 'boolean',

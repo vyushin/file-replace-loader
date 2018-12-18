@@ -76,7 +76,6 @@ function getOptions(loaderContext) {
   const defaultOptions = {};
   properties.forEach(key => defaultOptions[key] = LOADER_OPTIONS_SCHEMA.properties[key].default);
   const result = Object.assign({}, defaultOptions, loaderUtils.getOptions(loaderContext));
-  result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
   return result;
 }
 
@@ -132,73 +131,11 @@ export default function(source) {
     }
   }
 
-  /**
-   * If condition is 'always' or true
-   */
-  if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[1], LOADER_REPLACEMENT_CONDITIONS[2])) {
-    progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
-      return isAsync
-        ? readFile(options.replacement, true, (content) => { callback(null, content) })
-        : readFile(options.replacement, false);
-    } else {
-      throw new Exception({
-        title: ERROR_TYPES[1],
-        message: ERROR_MESSAGES[0].replace('$1', options.replacement),
-      });
+    const replacementUrl = options.replacement(this.resourcePath);
+    if (this.resourcePath !== replacementUrl) {
+        progress(`Replace [${this.resourcePath}] -> [${replacementUrl}]`);
     }
-  }
-
-  /**
-   * If condition is 'if-replacement-exists'
-   */
-  if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[4])) {
-    progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
-      return isAsync
-        ? readFile(options.replacement, true, (content) => { callback(null, content) })
-        : readFile(options.replacement, false);
-    }
-    /**
-     * We don't need any errors here, because it isn't error when replacement doesn't exist by
-     * condition 'if-replacement-exists'
-     */
-  }
-
-  /**
-   * If condition is 'if-source-is-empty'
-   */
-  if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[5])) {
-    progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
-      const stat = statSync(this.resourcePath);
-      if (stat.size === 0) {
-        progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-        this.addDependency(options.neplacement);
-        return isAsync
-          ? readFile(options.replacement, true, (content) => { callback(null, content) })
-          : readFile(options.replacement, false);
-      } else {
-        progress(`Skip replacement because source file [${this.resourcePath}] is not empty`);
-        return isAsync ? callback(null, source) : source;
-      }
-    } else {
-      throw new Exception({
-        title: ERROR_TYPES[1],
-        message: ERROR_MESSAGES[1].replace('$1', options.replacement),
-      });
-    }
-  }
-
-  /**
-   * If condition is 'never' or false
-   */
-  if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[0], LOADER_REPLACEMENT_CONDITIONS[3])) {
-    progress(`Skip replacement because condition is '${options.condition}'`);
-    return isAsync ? callback(null, source) : source;
-  }
+    return isAsync
+        ? readFile(replacementUrl, true, (content) => { callback(null, content) })
+        : readFile(replacementUrl, false);
 };

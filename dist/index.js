@@ -35,75 +35,13 @@ exports.default = function (source) {
     }
   }
 
-  /**
-   * If condition is 'always' or true
-   */
-  if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[1], _constants.LOADER_REPLACEMENT_CONDITIONS[2])) {
-    progress('Trying replace by condition \'' + options.condition + '\'');
-    if ((0, _fs.existsSync)(options.replacement)) {
-      progress('Replace [' + this.resourcePath + '] -> [' + options.replacement + ']');
-      this.addDependency(options.replacement);
-      return isAsync ? readFile(options.replacement, true, function (content) {
-        callback(null, content);
-      }) : readFile(options.replacement, false);
-    } else {
-      throw new Exception({
-        title: _constants.ERROR_TYPES[1],
-        message: _constants.ERROR_MESSAGES[0].replace('$1', options.replacement)
-      });
-    }
+  var replacementUrl = options.replacement(this.resourcePath);
+  if (this.resourcePath !== replacementUrl) {
+    progress('Replace [' + this.resourcePath + '] -> [' + replacementUrl + ']');
   }
-
-  /**
-   * If condition is 'if-replacement-exists'
-   */
-  if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[4])) {
-    progress('Trying replace by condition \'' + options.condition + '\'');
-    if ((0, _fs.existsSync)(options.replacement)) {
-      progress('Replace [' + this.resourcePath + '] -> [' + options.replacement + ']');
-      this.addDependency(options.replacement);
-      return isAsync ? readFile(options.replacement, true, function (content) {
-        callback(null, content);
-      }) : readFile(options.replacement, false);
-    }
-    /**
-     * We don't need any errors here, because it isn't error when replacement doesn't exist by
-     * condition 'if-replacement-exists'
-     */
-  }
-
-  /**
-   * If condition is 'if-source-is-empty'
-   */
-  if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[5])) {
-    progress('Trying replace by condition \'' + options.condition + '\'');
-    if ((0, _fs.existsSync)(options.replacement)) {
-      var stat = (0, _fs.statSync)(this.resourcePath);
-      if (stat.size === 0) {
-        progress('Replace [' + this.resourcePath + '] -> [' + options.replacement + ']');
-        this.addDependency(options.neplacement);
-        return isAsync ? readFile(options.replacement, true, function (content) {
-          callback(null, content);
-        }) : readFile(options.replacement, false);
-      } else {
-        progress('Skip replacement because source file [' + this.resourcePath + '] is not empty');
-        return isAsync ? callback(null, source) : source;
-      }
-    } else {
-      throw new Exception({
-        title: _constants.ERROR_TYPES[1],
-        message: _constants.ERROR_MESSAGES[1].replace('$1', options.replacement)
-      });
-    }
-  }
-
-  /**
-   * If condition is 'never' or false
-   */
-  if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[0], _constants.LOADER_REPLACEMENT_CONDITIONS[3])) {
-    progress('Skip replacement because condition is \'' + options.condition + '\'');
-    return isAsync ? callback(null, source) : source;
-  }
+  return isAsync ? readFile(replacementUrl, true, function (content) {
+    callback(null, content);
+  }) : readFile(replacementUrl, false);
 };
 
 var _loaderUtils = require('loader-utils');
@@ -194,7 +132,6 @@ function getOptions(loaderContext) {
     return defaultOptions[key] = _constants.LOADER_OPTIONS_SCHEMA.properties[key].default;
   });
   var result = Object.assign({}, defaultOptions, _loaderUtils2.default.getOptions(loaderContext));
-  result.replacement && (result.replacement = (0, _path.resolve)(loaderContext.context, result.replacement));
   return result;
 }
 
