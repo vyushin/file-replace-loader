@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = exports.ENCODING = undefined;
+exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = undefined;
 
 var _path = require('path');
 
@@ -14,7 +14,7 @@ var packageJson = _interopRequireWildcard(_package);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 /**
- * Usually used in read file functions
+ * Loader name
  * @const
  */
 /**
@@ -22,12 +22,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
  * {@link https://github.com/vyushin/file-replace-loader/blob/master/src/constants.js}
  */
 
-var ENCODING = 'utf8';
-
-/**
- * Loader name
- * @const
- */
 var LOADER_NAME = 'file-replace-loader';
 
 /**
@@ -113,7 +107,6 @@ var IS_DEBUG_MODE = (process.argv || []).some(function (arg) {
   return arg === '--debug';
 });
 
-exports.ENCODING = ENCODING;
 exports.LOADER_NAME = LOADER_NAME;
 exports.MAIN_LOADER_FILE = MAIN_LOADER_FILE;
 exports.LOADER_REPLACEMENT_CONDITIONS = LOADER_REPLACEMENT_CONDITIONS;

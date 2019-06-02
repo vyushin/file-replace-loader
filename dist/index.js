@@ -175,7 +175,7 @@ var progress = function () {
 
 function readFile(path, isAsync, callback) {
   if (isAsync) {
-    return (0, _fs.readFile)(path, _constants.ENCODING, function (err, content) {
+    return (0, _fs.readFile)(path, null, function (err, content) {
       err && new Exception({
         title: _constants.ERROR_TYPES[2],
         message: err.message
@@ -183,7 +183,7 @@ function readFile(path, isAsync, callback) {
       callback(content);
     });
   } else {
-    return (0, _fs.readFileSync)(path, { encoding: _constants.ENCODING, flag: 'r' });
+    return (0, _fs.readFileSync)(path, { flag: 'r' });
   }
 }
 
