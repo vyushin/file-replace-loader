@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.raw = undefined;
 
 exports.default = function (source) {
   var options = getOptions(this);
@@ -217,6 +218,16 @@ function condition(condition) {
   }
   return new Proof(condition);
 }
+
+/** Enable raw input from webpack
+ *
+ * This asks webpack to provide us a Buffer instead of a String.
+ *
+ * We need this to avoid corrupting binary files when returning
+ * the input unmodified.
+ *
+ */
+var raw = exports.raw = true;
 
 /**
  * File Replace Loader function

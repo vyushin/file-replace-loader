@@ -98,6 +98,16 @@ function condition(condition) {
   return new Proof(condition);
 }
 
+/** Enable raw input from webpack
+ *
+ * This asks webpack to provide us a Buffer instead of a String.
+ *
+ * We need this to avoid corrupting binary files when returning
+ * the input unmodified.
+ *
+ */
+export const raw = true;
+
 /**
  * File Replace Loader function
  */
