@@ -5,13 +5,14 @@
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
-### Features
+## Features
 
 * Compatibility with webpack 3.x, 4.x
 * Replaces files which importing in compile time
 * Sync and Async modes
 * Replaces files only in compile time, without changes source files
 * Compatibility with other loaders
+* Support binary files
 
 ## Usage
 
@@ -40,6 +41,37 @@ This example rule will replace all of imports `/\.config.js$/` to `config.local.
 
 After example build in bundle file will be some code from `config.local.js` and original sources
 won't changed.
+
+## Using with binary files
+
+File replace allows replace binary files. <br/>For example:
+
+```javascript
+//webpack.config.js
+
+const { resolve } = require('path');
+
+module.exports = {
+  //...
+  module: {
+    rules: [{
+      test: /\.png$/,
+      use: [{
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        },
+      }, {
+        loader: 'file-replace-loader',
+        options: {
+          condition: 'if-replacement-exists',
+          replacement: resolve('./src/replacement.png')
+        }
+      }]
+    }]
+  }
+}
+```
 
 ## Using with other loaders
 
@@ -121,10 +153,24 @@ cd ./example/dist
 node ./script.js
 ```
 
+That should be message in terminal:
+
+```bash
+Message from replacement.js
+```
+
+This means that file replace loader works.
+
+In `example/src` folder you can see example source code. Let's see on file `replacement.js`. 
+This is file containing message above. File replace loader replaced `example/src/source.js` to `example/src/replacement.js` then webpack copied files to `example/dist` folder.
+You can open `example/webpack.config.js` and see how file replace loader did it.
+
+After each change `example/webpack.config.js` you should run `npm run build_example_wp_4x` or `npm run build_example_wp_3x`.
+
 ## Installation
 
 ###### NPM
-`npm i -D file-replace-loader`
+`npm install --save-dev file-replace-loader`
 
 ## License
 [MIT LICENSE](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)

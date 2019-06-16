@@ -13,32 +13,41 @@ module.exports = {
   },
 
   module: {
-    rules: [{
-      test: /\.js$/,
-      use: [{
-        loader: 'babel-loader',
+    rules: [
+        /**
+         * Using file replace loader with text files (for example .js)
+         */
+        {
+        test: /\.js$/,
+        use: [{
+          loader: 'babel-loader',
+          }, {
+          loader: 'file-replace-loader',
+          options: {
+            condition: 'if-replacement-exists',
+            replacement: resolve('./src/replacement.js')
+          }
+        }]
+      },
+      /**
+       * Using file replace loader with binary files (for example .png)
+       */
+      {
+        test: /\.png$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
         }, {
-        loader: 'file-replace-loader',
-        options: {
-          condition: 'if-replacement-exists',
-          replacement: resolve('./src/replacement.js')
-        }
-      }]
-    }, {
-      test: /\.png$/,
-      use: [{
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]',
-        },
-      }, {
-        loader: 'file-replace-loader',
-        options: {
-          condition: 'if-replacement-exists',
-          replacement: resolve('./src/replacement.png')
-        }
-      }]
-    }]
+          loader: 'file-replace-loader',
+          options: {
+            condition: 'if-replacement-exists',
+            replacement: resolve('./src/replacement.png')
+          }
+        }]
+      }
+    ]
   },
   resolveLoader: {
     modules: ['node_modules', resolve('../../')]
