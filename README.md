@@ -44,7 +44,7 @@ won't changed.
 
 ## Using with binary files
 
-File replace allows replace binary files. <br/>For example:
+File replace loader allows replace binary files. <br/>For example:
 
 ```javascript
 //webpack.config.js
