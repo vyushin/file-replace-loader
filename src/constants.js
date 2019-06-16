@@ -7,12 +7,6 @@ import { resolve } from 'path';
 import * as packageJson from '../package.json';
 
 /**
- * Usually used in read file functions
- * @const
- */
-const ENCODING = 'utf8';
-
-/**
  * Loader name
  * @const
  */
@@ -107,7 +101,6 @@ const IS_PROGRESS_MODE = (process.argv || []).some(arg => arg === '--progress');
 const IS_DEBUG_MODE = (process.argv || []).some(arg => arg === '--debug');
 
 export {
-  ENCODING,
   LOADER_NAME,
   MAIN_LOADER_FILE,
   LOADER_REPLACEMENT_CONDITIONS,

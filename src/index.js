@@ -7,7 +7,7 @@ import loaderUtils from 'loader-utils';
 import validateOptions from 'schema-utils';
 import { resolve } from 'path';
 import { readFile as readFileAsync, readFileSync, existsSync, statSync } from 'fs';
-import { ENCODING, LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
+import { LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
   LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES, IS_PROGRESS_MODE, IS_DEBUG_MODE } from './constants';
 
 /**
@@ -59,7 +59,7 @@ const progress = function() {
 
 function readFile(path, isAsync, callback) {
   if (isAsync) {
-    return readFileAsync(path, ENCODING, (err, content) => {
+    return readFileAsync(path, null, (err, content) => {
       err && new Exception({
         title: ERROR_TYPES[2],
         message: err.message
@@ -67,7 +67,7 @@ function readFile(path, isAsync, callback) {
       callback(content);
     });
   } else {
-    return readFileSync(path, { encoding: ENCODING, flag: 'r' });
+    return readFileSync(path, { flag: 'r' });
   }
 }
 
@@ -97,6 +97,16 @@ function condition(condition) {
   }
   return new Proof(condition);
 }
+
+/** Enable raw input from webpack
+ *
+ * This asks webpack to provide us a Buffer instead of a String.
+ *
+ * We need this to avoid corrupting binary files when returning
+ * the input unmodified.
+ *
+ */
+export const raw = true;
 
 /**
  * File Replace Loader function
@@ -162,11 +172,9 @@ export default function(source) {
       return isAsync
         ? readFile(options.replacement, true, (content) => { callback(null, content) })
         : readFile(options.replacement, false);
+    } else {
+      return isAsync ? callback(null, source) : source;
     }
-    /**
-     * We don't need any errors here, because it isn't error when replacement doesn't exist by
-     * condition 'if-replacement-exists'
-     */
   }
 
   /**
