@@ -65,11 +65,9 @@ exports.default = function (source) {
       return isAsync ? readFile(options.replacement, true, function (content) {
         callback(null, content);
       }) : readFile(options.replacement, false);
+    } else {
+      return isAsync ? callback(null, source) : source;
     }
-    /**
-     * We don't need any errors here, because it isn't error when replacement doesn't exist by
-     * condition 'if-replacement-exists'
-     */
   }
 
   /**
