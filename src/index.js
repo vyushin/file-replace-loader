@@ -186,7 +186,7 @@ export default function(source) {
       const stat = statSync(this.resourcePath);
       if (stat.size === 0) {
         progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-        this.addDependency(options.neplacement);
+        this.addDependency(options.replacement);
         return isAsync
           ? readFile(options.replacement, true, (content) => { callback(null, content) })
           : readFile(options.replacement, false);

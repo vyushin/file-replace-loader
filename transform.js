@@ -13,8 +13,8 @@ console.info(`
 `);
 
 const { resolve, basename } = require('path');
-const babel = require('babel-core');
-const fs = require('fs');
+const { transformFileAsync } = require('@babel/core');
+const { mkdirSync, writeFileSync } = require('fs');
 
 /**
  * Target code must be compatible with this Node.js version
@@ -27,23 +27,19 @@ const TARGET_NODE_VERSION = '4.3.0';
  * @const
  */
 const TRANSFORM_OPTIONS = {
-  env: 'development',
   sourceType: 'module',
-  sourceMaps: false,
-  babelrc: false,
   comments: true,
+  sourceMaps: false,
   minified: false,
-  presets: [[
-    'babel-preset-env',
-    {
-      options: {
-        targets: {
-          node: TARGET_NODE_VERSION,
-          uglify: false,
-        },
-      }
-    }]
-  ]
+  configFile: false,
+  babelrc: false,
+  presets: [
+    ['@babel/preset-env', {
+      targets: {
+        node: TARGET_NODE_VERSION,
+      },
+    }],
+  ],
 };
 
 /**
@@ -61,13 +57,16 @@ const SOURCES = [
  */
 const DIST_DIR = resolve('./dist');
 
-fs.mkdirSync(DIST_DIR);
+mkdirSync(DIST_DIR);
 
 console.info(`Transform files for Node.js v${TARGET_NODE_VERSION}:\n  ${SOURCES.join(',\n  ')}`);
-SOURCES.forEach((source) => {
-  const { code } = babel.transformFileSync(source, TRANSFORM_OPTIONS);
-  fs.writeFileSync(resolve(DIST_DIR, basename(source)), code);
-});
+const promises = SOURCES.map((source) => (
+  transformFileAsync(source, TRANSFORM_OPTIONS).then((result) => {
+    writeFileSync(resolve(DIST_DIR, basename(source)), result.code);
+  })
+));
 
-console.info('\nTRANSFORM SUCCESSFUL!');
-console.timeEnd('time');
+Promise.all(promises).then(() => {
+  console.info('\nTRANSFORM SUCCESSFUL!');
+  console.timeEnd('time');
+});
