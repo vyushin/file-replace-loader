@@ -1,0 +1,17 @@
+{
+  "name": "file-replace-loader-test-project-webpack-3x",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "webpack --config webpack.3x.config.js --debug"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "file-replace-loader": "file:../../",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "file-loader": "^4.0.0",
+    "webpack": "3.10.0"
+  }
+}

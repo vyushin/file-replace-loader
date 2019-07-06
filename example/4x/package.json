@@ -1,0 +1,19 @@
+{
+  "name": "file-replace-loader-test-project-webpack-4x",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "webpack --mode development --config ./webpack.4x.config.js --debug",
+    "watch": "webpack --mode development --config ./webpack.4x.config.js --debug --watch"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "file-replace-loader": "file:../../",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "file-loader": "^4.0.0",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
+  }
+}

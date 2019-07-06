@@ -1,24 +1,30 @@
 # file-replace-loader
 [![version](https://img.shields.io/npm/v/file-replace-loader.svg?style=flat-square)](https://www.npmjs.com/package/file-replace-loader)
-[![npm downloads](https://img.shields.io/npm/dt/file-replace-loader.svg?style=flat-square)](https://www.npmjs.com/package/file-replace-loader)
+[![npm downloads](https://img.shields.io/npm/dw/file-replace-loader.svg?style=flat-square)](https://www.npmjs.com/package/file-replace-loader)
 [![license](https://img.shields.io/github/license/vyushin/file-replace-loader.svg?style=flat-square)](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
 ## Features
 
-* Compatibility with webpack 3.x, 4.x
-* Replaces files which importing in compile time
-* Sync and Async modes
-* Replaces files only in compile time, without changes source files
-* Compatibility with other loaders
-* Support binary files
+* Compatibility with webpack 3.x, 4.x;
+* Supports watch webpack mode;
+* Replace files in compile time without change source files;
+* Sync and async modes;
+* Compatibility with other loaders;
+* Support binary files.
+
+## Installation
+
+###### NPM
+`npm install --save-dev file-replace-loader`
+
+###### Yarn
+`yarn add file-replace-loader`
 
 ## Usage
 
 ```javascript
-//webpack.config.js
-
 const { resolve } = require('path');
 
 module.exports = {
@@ -39,12 +45,12 @@ module.exports = {
 
 This example rule will replace all of imports `/\.config.js$/` to `config.local.js` file, <br/>if replacement exists (condition `if-replacement-exists`).
 
-After example build in bundle file will be some code from `config.local.js` and original sources
+After example build in bundle file will some code from `config.local.js` and original sources
 won't changed.
 
 ## Using with binary files
 
-File replace loader allows replace binary files. <br/>For example:
+file-replace-loader allows replace binary files. <br/>For example:
 
 ```javascript
 //webpack.config.js
@@ -75,7 +81,7 @@ module.exports = {
 
 ## Using with other loaders
 
-File replace loader must executes before other loaders. It means that in webpack config file the loader must be last in list. <br/>For example:
+file-replace-loader must executes before other loaders. It means that in webpack config file the loader must be last in list. <br/>For example:
 
 ```javascript
 //webpack.config.js
@@ -104,7 +110,7 @@ module.exports = {
 }
 ```
 
-Above is correct example. File replace loader will executed before other loaders.
+Above is correct example. file-replace-loader will executed before other loaders.
 <br/>Let's see incorrect usage:
 
 ```javascript
@@ -112,7 +118,7 @@ Above is correct example. File replace loader will executed before other loaders
 
 const { resolve } = require('path');
 
-// Error, because file replace loader will be execute after other loaders
+// Error, because file-replace-loader will be execute after other loaders
 
 module.exports = {
   //...
@@ -142,10 +148,8 @@ module.exports = {
 | `replacement`<br/>Replacement file    | `string`        | yes            | —                       | Full path to file
 | `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
 
-## Installation
-
-###### NPM
-`npm install --save-dev file-replace-loader`
+## Contributing
+See [contributing](https://github.com/vyushin/file-replace-loader/blob/master/CONTRIBUTING.md) guideline.
 
 ## License
 [MIT LICENSE](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)

@@ -42,15 +42,12 @@ module.exports = {
         }, {
           loader: 'file-replace-loader',
           options: {
-            condition: 'if-replacement-exists',
+            condition: true,
             replacement: resolve('./src/replacement.png')
           }
         }]
       }
     ]
-  },
-  resolveLoader: {
-    modules: ['node_modules', resolve('../../')]
   },
   target: 'node',
 };
