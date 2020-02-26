@@ -38,6 +38,8 @@ That should be message in terminal:
 
 ```bash
 Message from replacement.js
+Message from replacement-a.js
+Message from replacement-b.js
 ```
 
 This means that file-replace-loader works.
@@ -45,7 +47,7 @@ This means that file-replace-loader works.
 **NOTE:** Example dependencies has link to **local** file-replace-loader.<br/>
 Look in `example/[3x|4x]/package.json`:
 
-```javascript
+```json
 {
   "devDependencies": {
     "file-replace-loader": "file:../../"

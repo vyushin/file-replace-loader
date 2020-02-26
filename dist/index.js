@@ -97,8 +97,8 @@ function getOptions(loaderContext) {
   properties.forEach(function (key) {
     return defaultOptions[key] = _constants.LOADER_OPTIONS_SCHEMA.properties[key].default;
   });
-  var result = Object.assign({}, defaultOptions, _loaderUtils.default.getOptions(loaderContext));
-  result.replacement && (result.replacement = (0, _path.resolve)(loaderContext.context, result.replacement));
+  var result = Object.assign({}, defaultOptions, _loaderUtils.default.getOptions(loaderContext)); //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
+
   return result;
 }
 /**
@@ -145,9 +145,14 @@ function _default(source) {
   var options = getOptions(this);
   var isAsync = options && options.async === true;
   var callback = isAsync === true && this.async() || null;
+
+  var replacement = function replacement(resourcePath) {
+    return options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement;
+  };
   /**
    * Validate loader options before its work
    */
+
 
   try {
     progress(`Validate options`);
@@ -179,17 +184,22 @@ function _default(source) {
 
   if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[1], _constants.LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
+    var replacementPath = replacement(this.resourcePath);
 
-    if ((0, _fs.existsSync)(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
-      return isAsync ? readFile(options.replacement, true, function (content) {
+    if (replacementPath === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+
+    if ((0, _fs.existsSync)(replacementPath)) {
+      progress(`Replace [${this.resourcePath}] -> [${replacementPath}]`);
+      this.addDependency(replacementPath);
+      return isAsync ? readFile(replacementPath, true, function (content) {
         callback(null, content);
-      }) : readFile(options.replacement, false);
+      }) : readFile(replacementPath, false);
     } else {
       throw new Exception({
         title: _constants.ERROR_TYPES[1],
-        message: _constants.ERROR_MESSAGES[0].replace('$1', options.replacement)
+        message: _constants.ERROR_MESSAGES[0].replace('$1', replacementPatht)
       });
     }
   }
@@ -201,12 +211,18 @@ function _default(source) {
   if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress(`Trying replace by condition '${options.condition}'`);
 
-    if ((0, _fs.existsSync)(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
-      return isAsync ? readFile(options.replacement, true, function (content) {
+    var _replacementPath = replacement(this.resourcePath);
+
+    if (_replacementPath === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+
+    if ((0, _fs.existsSync)(_replacementPath)) {
+      progress(`Replace [${this.resourcePath}] -> [${_replacementPath}]`);
+      this.addDependency(_replacementPath);
+      return isAsync ? readFile(_replacementPath, true, function (content) {
         callback(null, content);
-      }) : readFile(options.replacement, false);
+      }) : readFile(_replacementPath, false);
     } else {
       return isAsync ? callback(null, source) : source;
     }
@@ -219,15 +235,21 @@ function _default(source) {
   if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress(`Trying replace by condition '${options.condition}'`);
 
-    if ((0, _fs.existsSync)(options.replacement)) {
+    var _replacementPath2 = replacement(this.resourcePath);
+
+    if (_replacementPath2 === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+
+    if ((0, _fs.existsSync)(_replacementPath2)) {
       var stat = (0, _fs.statSync)(this.resourcePath);
 
       if (stat.size === 0) {
-        progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-        this.addDependency(options.replacement);
-        return isAsync ? readFile(options.replacement, true, function (content) {
+        progress(`Replace [${this.resourcePath}] -> [${_replacementPath2}]`);
+        this.addDependency(_replacementPath2);
+        return isAsync ? readFile(_replacementPath2, true, function (content) {
           callback(null, content);
-        }) : readFile(options.replacement, false);
+        }) : readFile(_replacementPath2, false);
       } else {
         progress(`Skip replacement because source file [${this.resourcePath}] is not empty`);
         return isAsync ? callback(null, source) : source;
@@ -235,7 +257,7 @@ function _default(source) {
     } else {
       throw new Exception({
         title: _constants.ERROR_TYPES[1],
-        message: _constants.ERROR_MESSAGES[1].replace('$1', options.replacement)
+        message: _constants.ERROR_MESSAGES[1].replace('$1', _replacementPath2)
       });
     }
   }
