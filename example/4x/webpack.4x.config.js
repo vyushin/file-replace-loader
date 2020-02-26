@@ -25,7 +25,14 @@ module.exports = {
           loader: 'file-replace-loader',
           options: {
             condition: 'if-replacement-exists',
-            replacement: resolve('./src/replacement.js')
+            replacement(resourcePath) {
+              const mapping = {
+                [resolve('./src/source.js')]: resolve('./src/replacement.js'),
+                [resolve('./src/multiple-replacement-test/source-a.js')]: resolve('./src/multiple-replacement-test/replacement-a.js'),
+                [resolve('./src/multiple-replacement-test/source-b.js')]: resolve('./src/multiple-replacement-test/replacement-b.js'),
+              };
+              return mapping[resourcePath];
+            }
           }
         }]
       },

@@ -9,7 +9,9 @@ var _path = require("path");
 
 var packageJson = _interopRequireWildcard(require("../package.json"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /**
  * Constants of file replace loader
@@ -59,12 +61,14 @@ ERROR_TYPES[0] = 'Invalid options';
 ERROR_TYPES[1] = 'Replacement error';
 ERROR_TYPES[2] = 'File reading error';
 ERROR_TYPES[3] = 'Usage error';
+var HELP_INFO_MESSAGE = `If you are experiencing difficulties to solve this problem please create an issue on ${packageJson.bugs.url}`;
 var ERROR_MESSAGES = [];
 exports.ERROR_MESSAGES = ERROR_MESSAGES;
-ERROR_MESSAGES[0] = `File ($1) doesn't exist but specified in ${LOADER_NAME} options with \n` + `  condition ${LOADER_REPLACEMENT_CONDITIONS[1]} or '${LOADER_REPLACEMENT_CONDITIONS[2]}'. \n` + `  Perhaps this is due replacement isn't full path. Make sure that file exists and replacement\n` + `  option is full path to file.\n` + `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
-ERROR_MESSAGES[1] = `File ($1) doesn't exist but specified in replacement. ${LOADER_NAME} can't replace\n` + `  it by '${LOADER_REPLACEMENT_CONDITIONS[5]}' condition. Make sure that replacement file exists. \n` + `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
-ERROR_MESSAGES[2] = `should be equal to one of the allowed values: [$1]. \n` + `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
-ERROR_MESSAGES[3] = `${LOADER_NAME} must executes before other loaders. Check your Webpack config file.\n` + `  NOTE: Webpack reads loaders from right to left. So ${LOADER_NAME} have to be the last in array of loaders. \n` + `  If you are experiencing difficulties to solve this problem, you can create an issue on ${packageJson.bugs.url}`;
+ERROR_MESSAGES[0] = `File ($1) doesn't exist but specified in ${LOADER_NAME} options with \n` + `  condition ${LOADER_REPLACEMENT_CONDITIONS[1]} or '${LOADER_REPLACEMENT_CONDITIONS[2]}'. \n` + `  Perhaps this is due replacement isn't full path. Make sure that file exists and replacement\n` + `  option is full path to file.\n` + `  ${HELP_INFO_MESSAGE}`;
+ERROR_MESSAGES[1] = `File ($1) doesn't exist but specified in replacement. ${LOADER_NAME} can't replace\n` + `  it by '${LOADER_REPLACEMENT_CONDITIONS[5]}' condition. Make sure that replacement file exists. \n` + `  ${HELP_INFO_MESSAGE}`;
+ERROR_MESSAGES[2] = `should be equal to one of the allowed values: [$1]. \n` + `  ${HELP_INFO_MESSAGE}`;
+ERROR_MESSAGES[3] = `${LOADER_NAME} must executes before other loaders. Check your Webpack config file.\n` + `  NOTE: Webpack reads loaders from right to left. So ${LOADER_NAME} have to be the last in array of loaders. \n` + `  ${HELP_INFO_MESSAGE}`;
+ERROR_MESSAGES[4] = `should be full path to file or function returning full path to file. \n` + `  ${HELP_INFO_MESSAGE}`;
 /**
  * Schema for validate loader options
  * @const
@@ -81,7 +85,14 @@ var LOADER_OPTIONS_SCHEMA = {
       }
     },
     replacement: {
-      type: 'string'
+      anyOf: [{
+        type: 'string'
+      }, {
+        instanceof: 'Function'
+      }],
+      errorMessages: {
+        anyOf: ERROR_MESSAGES[4]
+      }
     },
     async: {
       type: 'boolean',

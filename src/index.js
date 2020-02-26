@@ -76,7 +76,7 @@ function getOptions(loaderContext) {
   const defaultOptions = {};
   properties.forEach(key => defaultOptions[key] = LOADER_OPTIONS_SCHEMA.properties[key].default);
   const result = Object.assign({}, defaultOptions, loaderUtils.getOptions(loaderContext));
-  result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
+  //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
   return result;
 }
 
@@ -115,6 +115,9 @@ export default function(source) {
   const options = getOptions(this);
   const isAsync = options && options.async === true;
   const callback = isAsync === true && this.async() || null;
+  const replacement = (resourcePath) => (
+    options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement
+  );
 
   /**
    * Validate loader options before its work
@@ -147,16 +150,20 @@ export default function(source) {
    */
   if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[1], LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
+    const replacementPath = replacement(this.resourcePath);
+    if (replacementPath === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+    if (existsSync(replacementPath)) {
+      progress(`Replace [${this.resourcePath}] -> [${replacementPath}]`);
+      this.addDependency(replacementPath);
       return isAsync
-        ? readFile(options.replacement, true, (content) => { callback(null, content) })
-        : readFile(options.replacement, false);
+        ? readFile(replacementPath, true, (content) => { callback(null, content) })
+        : readFile(replacementPath, false);
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
-        message: ERROR_MESSAGES[0].replace('$1', options.replacement),
+        message: ERROR_MESSAGES[0].replace('$1', replacementPatht),
       });
     }
   }
@@ -166,12 +173,16 @@ export default function(source) {
    */
   if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
-      progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-      this.addDependency(options.replacement);
+    const replacementPath = replacement(this.resourcePath);
+    if (replacementPath === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+    if (existsSync(replacementPath)) {
+      progress(`Replace [${this.resourcePath}] -> [${replacementPath}]`);
+      this.addDependency(replacementPath);
       return isAsync
-        ? readFile(options.replacement, true, (content) => { callback(null, content) })
-        : readFile(options.replacement, false);
+        ? readFile(replacementPath, true, (content) => { callback(null, content) })
+        : readFile(replacementPath, false);
     } else {
       return isAsync ? callback(null, source) : source;
     }
@@ -182,14 +193,18 @@ export default function(source) {
    */
   if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress(`Trying replace by condition '${options.condition}'`);
-    if (existsSync(options.replacement)) {
+    const replacementPath = replacement(this.resourcePath);
+    if (replacementPath === null) {
+      return isAsync ? callback(null, source) : source; // Skip replacement
+    }
+    if (existsSync(replacementPath)) {
       const stat = statSync(this.resourcePath);
       if (stat.size === 0) {
-        progress(`Replace [${this.resourcePath}] -> [${options.replacement}]`);
-        this.addDependency(options.replacement);
+        progress(`Replace [${this.resourcePath}] -> [${replacementPath}]`);
+        this.addDependency(replacementPath);
         return isAsync
-          ? readFile(options.replacement, true, (content) => { callback(null, content) })
-          : readFile(options.replacement, false);
+          ? readFile(replacementPath, true, (content) => { callback(null, content) })
+          : readFile(replacementPath, false);
       } else {
         progress(`Skip replacement because source file [${this.resourcePath}] is not empty`);
         return isAsync ? callback(null, source) : source;
@@ -197,7 +212,7 @@ export default function(source) {
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
-        message: ERROR_MESSAGES[1].replace('$1', options.replacement),
+        message: ERROR_MESSAGES[1].replace('$1', replacementPath),
       });
     }
   }
