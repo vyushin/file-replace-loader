@@ -199,7 +199,7 @@ function _default(source) {
     } else {
       throw new Exception({
         title: _constants.ERROR_TYPES[1],
-        message: _constants.ERROR_MESSAGES[0].replace('$1', replacementPatht)
+        message: _constants.ERROR_MESSAGES[0].replace('$1', replacementPath)
       });
     }
   }
