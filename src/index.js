@@ -163,7 +163,7 @@ export default function(source) {
     } else {
       throw new Exception({
         title: ERROR_TYPES[1],
-        message: ERROR_MESSAGES[0].replace('$1', replacementPatht),
+        message: ERROR_MESSAGES[0].replace('$1', replacementPath),
       });
     }
   }
