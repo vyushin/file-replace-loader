@@ -2,7 +2,7 @@
   "name": "file-replace-loader-test-project-webpack-4x",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack --mode development --config ./webpack.4x.config.js --debug",
+    "build": "webpack --mode development --config ./webpack.4x.config.js --debug --progress",
     "watch": "webpack --mode development --config ./webpack.4x.config.js --debug --watch"
   },
   "license": "MIT",

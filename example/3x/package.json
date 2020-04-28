@@ -2,7 +2,7 @@
   "name": "file-replace-loader-test-project-webpack-3x",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack --config webpack.3x.config.js --debug"
+    "build": "webpack --config webpack.3x.config.js --progress --debug"
   },
   "license": "MIT",
   "devDependencies": {

@@ -5,10 +5,9 @@
 
 import loaderUtils from 'loader-utils';
 import validateOptions from 'schema-utils';
-import { resolve } from 'path';
 import { readFile as readFileAsync, readFileSync, existsSync, statSync } from 'fs';
-import { LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS,
-  LOADER_OPTIONS_SCHEMA, ERROR_TYPES, ERROR_MESSAGES, IS_PROGRESS_MODE, IS_DEBUG_MODE } from './constants';
+import { LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS, LOADER_OPTIONS_SCHEMA,
+  ERROR_TYPES, ERROR_MESSAGES } from './constants';
 
 /**
  * Custom exception formatted to the loader format
@@ -41,10 +40,12 @@ function prepareErrorSchemaMessage(e) {
 }
 
 /**
- * Progress function wrapper
+ * Progress function factory
+ * @param {Object} options Options object
+ * @return {Function} Progress function
  */
-const progress = function() {
-  if (IS_PROGRESS_MODE !== true && IS_DEBUG_MODE !== true) return () => {};
+const progressFactory = function({ progress }) {
+  if (!progress) return () => {};
   let isFirstMessage = true;
   /**
    * Print progress message
@@ -55,7 +56,7 @@ const progress = function() {
     console.info(`${newLine}[${LOADER_NAME}]: ${message}`);
     isFirstMessage = false;
   };
-}();
+};
 
 function readFile(path, isAsync, callback) {
   if (isAsync) {
@@ -118,6 +119,7 @@ export default function(source) {
   const replacement = (resourcePath) => (
     options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement
   );
+  const progress = progressFactory(options);
 
   /**
    * Validate loader options before its work

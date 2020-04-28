@@ -18,6 +18,19 @@ const LOADER_NAME = 'file-replace-loader';
  */
 const MAIN_LOADER_FILE = resolve(__dirname, '../', packageJson.main);
 
+
+/**
+ * True if the build runs with --progress arg
+ * @const
+ */
+const IS_PROGRESS_MODE = (process.argv || []).some(arg => arg === '--progress');
+
+/**
+ * True if the build runs with --debug arg
+ * @const
+ */
+const IS_DEBUG_MODE = (process.argv || []).some(arg => arg === '--debug');
+
 /**
  * Loader replacement conditions
  * These modes have to use in loader options in webpack config.
@@ -93,31 +106,23 @@ const LOADER_OPTIONS_SCHEMA = {
     async: {
       type: 'boolean',
       default: true
+    },
+    progress: {
+      type: 'boolean',
+      default: IS_DEBUG_MODE || IS_PROGRESS_MODE,
     }
   },
   additionalProperties: false,
   required: ['replacement'],
 };
 
-/**
- * True if the build runs with --progress arg
- * @const
- */
-const IS_PROGRESS_MODE = (process.argv || []).some(arg => arg === '--progress');
-
-/**
- * True if the build runs with --debug arg
- * @const
- */
-const IS_DEBUG_MODE = (process.argv || []).some(arg => arg === '--debug');
-
 export {
   LOADER_NAME,
   MAIN_LOADER_FILE,
+  IS_PROGRESS_MODE,
+  IS_DEBUG_MODE,
   LOADER_REPLACEMENT_CONDITIONS,
   LOADER_OPTIONS_SCHEMA,
   ERROR_TYPES,
   ERROR_MESSAGES,
-  IS_PROGRESS_MODE,
-  IS_DEBUG_MODE,
 }
