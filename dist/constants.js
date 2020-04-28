@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = void 0;
+exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = void 0;
 
 var _path = require("path");
 
@@ -31,6 +31,24 @@ var LOADER_NAME = 'file-replace-loader';
 exports.LOADER_NAME = LOADER_NAME;
 var MAIN_LOADER_FILE = (0, _path.resolve)(__dirname, '../', packageJson.main);
 /**
+ * True if the build runs with --progress arg
+ * @const
+ */
+
+exports.MAIN_LOADER_FILE = MAIN_LOADER_FILE;
+var IS_PROGRESS_MODE = (process.argv || []).some(function (arg) {
+  return arg === '--progress';
+});
+/**
+ * True if the build runs with --debug arg
+ * @const
+ */
+
+exports.IS_PROGRESS_MODE = IS_PROGRESS_MODE;
+var IS_DEBUG_MODE = (process.argv || []).some(function (arg) {
+  return arg === '--debug';
+});
+/**
  * Loader replacement conditions
  * These modes have to use in loader options in webpack config.
  * Array indexing helps using this array like enum type during code is writing
@@ -38,7 +56,7 @@ var MAIN_LOADER_FILE = (0, _path.resolve)(__dirname, '../', packageJson.main);
  * @enum
  */
 
-exports.MAIN_LOADER_FILE = MAIN_LOADER_FILE;
+exports.IS_DEBUG_MODE = IS_DEBUG_MODE;
 var LOADER_REPLACEMENT_CONDITIONS = [];
 exports.LOADER_REPLACEMENT_CONDITIONS = LOADER_REPLACEMENT_CONDITIONS;
 LOADER_REPLACEMENT_CONDITIONS[0] = false; // Equivalent to "never"
@@ -97,27 +115,13 @@ var LOADER_OPTIONS_SCHEMA = {
     async: {
       type: 'boolean',
       default: true
+    },
+    progress: {
+      type: 'boolean',
+      default: IS_DEBUG_MODE || IS_PROGRESS_MODE
     }
   },
   additionalProperties: false,
   required: ['replacement']
 };
-/**
- * True if the build runs with --progress arg
- * @const
- */
-
 exports.LOADER_OPTIONS_SCHEMA = LOADER_OPTIONS_SCHEMA;
-var IS_PROGRESS_MODE = (process.argv || []).some(function (arg) {
-  return arg === '--progress';
-});
-/**
- * True if the build runs with --debug arg
- * @const
- */
-
-exports.IS_PROGRESS_MODE = IS_PROGRESS_MODE;
-var IS_DEBUG_MODE = (process.argv || []).some(function (arg) {
-  return arg === '--debug';
-});
-exports.IS_DEBUG_MODE = IS_DEBUG_MODE;

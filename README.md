@@ -226,6 +226,7 @@ This case throw an error because file-replace-loader should be last in list.
 | `condition`<br/>Condition to replace  | `string`&#124;`boolean`        | no             | `'if-replacement-exists'` | `true`,<br/>`false`,<br/>`'always'`,<br/>`'never'`,<br/>`'if-replacement-exists'`,<br/>`'if-source-is-empty'`
 | `replacement`<br/>Replacement file    | `string`&#124;`Function`        | yes            | —                       | Full path to file or function returning full path to file
 | `async`<br/>Asynchronous file reading | `boolean`       | no             | `true`                  | `true`,<br/>`false`
+| `progress`<br/>Progress output        | `boolean`       | no             | `IS_DEBUG_MODE == true or IS_PROGRESS_MODE == true`                  | `true`,<br/>`false`
 
 ## Contributing
 See [contributing](https://github.com/vyushin/file-replace-loader/blob/master/CONTRIBUTING.md) guideline.

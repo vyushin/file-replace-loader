@@ -1,11 +1,12 @@
 {
   "name": "file-replace-loader",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "file-replace-loader is webpack loader that allows you replace files in compile time",
   "author": "Evgeny Vyushin <e@vyushin.ru> (https://github.com/vyushin)",
   "contributors": [
     "Evgeny Vyushin <e@vyushin.ru> (https://github.com/vyushin)",
-    "Mickaël Thomas (https://github.com/mickael9)"
+    "Mickaël Thomas (https://github.com/mickael9)",
+    "Hodor (https://github.com/hodor-cn)"
   ],
   "maintainers": [
     "Evgeny Vyushin <e@vyushin.ru> (https://github.com/vyushin)"

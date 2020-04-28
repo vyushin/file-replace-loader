@@ -10,8 +10,6 @@ var _loaderUtils = _interopRequireDefault(require("loader-utils"));
 
 var _schemaUtils = _interopRequireDefault(require("schema-utils"));
 
-var _path = require("path");
-
 var _fs = require("fs");
 
 var _constants = require("./constants");
@@ -56,12 +54,15 @@ function prepareErrorSchemaMessage(e) {
   return e;
 }
 /**
- * Progress function wrapper
+ * Progress function factory
+ * @param {Object} options Options object
+ * @return {Function} Progress function
  */
 
 
-var progress = function () {
-  if (_constants.IS_PROGRESS_MODE !== true && _constants.IS_DEBUG_MODE !== true) return function () {};
+var progressFactory = function progressFactory(_ref) {
+  var progress = _ref.progress;
+  if (!progress) return function () {};
   var isFirstMessage = true;
   /**
    * Print progress message
@@ -73,7 +74,7 @@ var progress = function () {
     console.info(`${newLine}[${_constants.LOADER_NAME}]: ${message}`);
     isFirstMessage = false;
   };
-}();
+};
 
 function readFile(path, isAsync, callback) {
   if (isAsync) {
@@ -149,10 +150,11 @@ function _default(source) {
   var replacement = function replacement(resourcePath) {
     return options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement;
   };
+
+  var progress = progressFactory(options);
   /**
    * Validate loader options before its work
    */
-
 
   try {
     progress(`Validate options`);

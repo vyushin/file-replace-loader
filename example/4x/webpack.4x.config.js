@@ -25,6 +25,7 @@ module.exports = {
           loader: 'file-replace-loader',
           options: {
             condition: 'if-replacement-exists',
+            progress: false,
             replacement(resourcePath) {
               const mapping = {
                 [resolve('./src/source.js')]: resolve('./src/replacement.js'),
@@ -49,6 +50,7 @@ module.exports = {
         }, {
           loader: 'file-replace-loader',
           options: {
+            progress: false,
             replacement: resolve('./src/replacement.png')
           }
         }]
