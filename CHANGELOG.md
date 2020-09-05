@@ -1,3 +1,10 @@
+## 1.3.0 (05 Sep, 2020)
+
+* Prepare the loader to Webpack 5 (https://webpack.js.org/migrate/5/#getoptions-method-for-loaders)
+* Add Webpack 5 example
+* Update dependencies
+* Mark example projects as private
+
 ## 1.2.0 (29 Apr, 2020)
 
 * [#13](https://github.com/vyushin/file-replace-loader/issues/13) Progress info disable (add new option `progress`)

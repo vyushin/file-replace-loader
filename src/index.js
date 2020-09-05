@@ -7,7 +7,7 @@ import loaderUtils from 'loader-utils';
 import validateOptions from 'schema-utils';
 import { readFile as readFileAsync, readFileSync, existsSync, statSync } from 'fs';
 import { LOADER_NAME, MAIN_LOADER_FILE, LOADER_REPLACEMENT_CONDITIONS, LOADER_OPTIONS_SCHEMA,
-  ERROR_TYPES, ERROR_MESSAGES } from './constants';
+  ERROR_TYPES, ERROR_MESSAGES, HELP_INFO_MESSAGE } from './constants';
 
 /**
  * Custom exception formatted to the loader format
@@ -35,7 +35,7 @@ function prepareErrorSchemaMessage(e) {
     message += `\n  [options.${dataPath}]: ${(errorMessages && errorMessages[error.keyword]) || error.message}`;
   });
   e.name = `\n[${LOADER_NAME}]`;
-  e.message = message ? `${ERROR_TYPES[0]} ${message}\n` : e.message;
+  e.message = `${message ? `${ERROR_TYPES[0]} ${message}\n` : e.message} ${HELP_INFO_MESSAGE}`;
   return e;
 }
 
@@ -73,10 +73,12 @@ function readFile(path, isAsync, callback) {
 }
 
 function getOptions(loaderContext) {
+  const hasLoaderContextGetOptionsFunc = typeof loaderContext.getOptions === 'function'; // Since Webpack 5, getOptions function is part of loader context
+  const options = hasLoaderContextGetOptionsFunc ? loaderContext.getOptions(LOADER_OPTIONS_SCHEMA) : loaderUtils.getOptions(loaderContext);
   const properties = Object.keys(LOADER_OPTIONS_SCHEMA.properties) || [];
   const defaultOptions = {};
   properties.forEach(key => defaultOptions[key] = LOADER_OPTIONS_SCHEMA.properties[key].default);
-  const result = Object.assign({}, defaultOptions, loaderUtils.getOptions(loaderContext));
+  const result = Object.assign({}, defaultOptions, options);
   //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
   return result;
 }
@@ -128,7 +130,7 @@ export default function(source) {
     progress(`Validate options`);
     validateOptions(LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
-    throw prepareErrorSchemaMessage(e);
+    this.emitError(e);
   }
 
   /**

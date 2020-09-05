@@ -7,7 +7,7 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 
 ## Features
 
-* Compatibility with webpack 3.x, 4.x;
+* Compatibility with webpack 3.x, 4.x, 5.x;
 * Support watch webpack mode;
 * Replace files in compile time without change source files;
 * Multiple replacement;

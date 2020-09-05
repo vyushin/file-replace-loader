@@ -50,7 +50,7 @@ function prepareErrorSchemaMessage(e) {
     message += `\n  [options.${dataPath}]: ${errorMessages && errorMessages[error.keyword] || error.message}`;
   });
   e.name = `\n[${_constants.LOADER_NAME}]`;
-  e.message = message ? `${_constants.ERROR_TYPES[0]} ${message}\n` : e.message;
+  e.message = `${message ? `${_constants.ERROR_TYPES[0]} ${message}\n` : e.message} ${_constants.HELP_INFO_MESSAGE}`;
   return e;
 }
 /**
@@ -93,12 +93,15 @@ function readFile(path, isAsync, callback) {
 }
 
 function getOptions(loaderContext) {
+  var hasLoaderContextGetOptionsFunc = typeof loaderContext.getOptions === 'function'; // Since Webpack 5, getOptions function is part of loader context
+
+  var options = hasLoaderContextGetOptionsFunc ? loaderContext.getOptions(_constants.LOADER_OPTIONS_SCHEMA) : _loaderUtils.default.getOptions(loaderContext);
   var properties = Object.keys(_constants.LOADER_OPTIONS_SCHEMA.properties) || [];
   var defaultOptions = {};
   properties.forEach(function (key) {
     return defaultOptions[key] = _constants.LOADER_OPTIONS_SCHEMA.properties[key].default;
   });
-  var result = Object.assign({}, defaultOptions, _loaderUtils.default.getOptions(loaderContext)); //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
+  var result = Object.assign({}, defaultOptions, options); //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
 
   return result;
 }
@@ -160,7 +163,7 @@ function _default(source) {
     progress(`Validate options`);
     (0, _schemaUtils.default)(_constants.LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
-    throw prepareErrorSchemaMessage(e);
+    this.emitError(e);
   }
   /**
    * Checking using with other loaders
