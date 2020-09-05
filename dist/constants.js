@@ -94,7 +94,7 @@ ERROR_MESSAGES[4] = `should be full path to file or function returning full path
 
 var LOADER_OPTIONS_SCHEMA = {
   title: LOADER_NAME,
-  description: `${LOADER_NAME} webpack options schema`,
+  description: `${LOADER_NAME} Webpack JSON Schema options`,
   type: 'object',
   properties: {
     condition: {

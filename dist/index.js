@@ -163,7 +163,7 @@ function _default(source) {
     progress(`Validate options`);
     (0, _schemaUtils.default)(_constants.LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
-    this.emitError(e);
+    throw prepareErrorSchemaMessage(e);
   }
   /**
    * Checking using with other loaders

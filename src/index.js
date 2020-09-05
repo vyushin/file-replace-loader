@@ -130,7 +130,7 @@ export default function(source) {
     progress(`Validate options`);
     validateOptions(LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
-    this.emitError(e);
+    throw prepareErrorSchemaMessage(e);
   }
 
   /**
