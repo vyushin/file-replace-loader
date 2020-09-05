@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "file-replace-loader-test-project-webpack-4x",
   "version": "1.0.0",
   "scripts": {

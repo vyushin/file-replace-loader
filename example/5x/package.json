@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "file-replace-loader-test-project-webpack-5x",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "webpack --mode development --config ./webpack.5x.config.js --debug --progress",
+    "watch": "webpack --mode development --config ./webpack.5x.config.js --debug --watch"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "file-loader": "^6.1.0",
+    "file-replace-loader": "file:../../",
+    "webpack": "^5.0.0-beta.29",
+    "webpack-cli": "^3.3.12"
+  }
+}
