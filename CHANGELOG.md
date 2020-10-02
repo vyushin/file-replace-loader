@@ -1,3 +1,7 @@
+## 1.3.1 (02 Oct, 2020)
+
+* Fix bug when the loader works idle if replacement returns the same path
+
 ## 1.3.0 (05 Sep, 2020)
 
 * Prepare the loader to Webpack 5 (https://webpack.js.org/migrate/5/#getoptions-method-for-loaders)

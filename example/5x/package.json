@@ -13,7 +13,7 @@
     "babel-loader": "^8.1.0",
     "file-loader": "^6.1.0",
     "file-replace-loader": "file:../../",
-    "webpack": "^5.0.0-beta.29",
+    "webpack": "^5.0.0-rc.3",
     "webpack-cli": "^3.3.12"
   }
 }
