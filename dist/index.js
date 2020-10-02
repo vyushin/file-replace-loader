@@ -190,8 +190,10 @@ function _default(source) {
   if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[1], _constants.LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
     var replacementPath = replacement(this.resourcePath);
+    var isTheSamePath = replacementPath === this.resourcePath;
 
-    if (replacementPath === null) {
+    if (replacementPath === null || isTheSamePath) {
+      isTheSamePath && progress(`Skip replace because replacement returned the same path [${replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
 
@@ -218,7 +220,10 @@ function _default(source) {
 
     var _replacementPath = replacement(this.resourcePath);
 
-    if (_replacementPath === null) {
+    var _isTheSamePath = _replacementPath === this.resourcePath;
+
+    if (_replacementPath === null || _isTheSamePath) {
+      _isTheSamePath && progress(`Skip replace because replacement returned the same path [${_replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
 
@@ -242,7 +247,10 @@ function _default(source) {
 
     var _replacementPath2 = replacement(this.resourcePath);
 
-    if (_replacementPath2 === null) {
+    var _isTheSamePath2 = _replacementPath2 === this.resourcePath;
+
+    if (_replacementPath2 === null || _isTheSamePath2) {
+      _isTheSamePath2 && progress(`Skip replace because replacement returned the same path [${_replacementPath2}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
 

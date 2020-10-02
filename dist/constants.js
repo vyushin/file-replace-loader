@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = void 0;
+exports.HELP_INFO_MESSAGE = exports.ERROR_MESSAGES = exports.ERROR_TYPES = exports.LOADER_OPTIONS_SCHEMA = exports.LOADER_REPLACEMENT_CONDITIONS = exports.IS_DEBUG_MODE = exports.IS_PROGRESS_MODE = exports.MAIN_LOADER_FILE = exports.LOADER_NAME = void 0;
 
 var _path = require("path");
 
@@ -80,6 +80,7 @@ ERROR_TYPES[1] = 'Replacement error';
 ERROR_TYPES[2] = 'File reading error';
 ERROR_TYPES[3] = 'Usage error';
 var HELP_INFO_MESSAGE = `If you are experiencing difficulties to solve this problem please create an issue on ${packageJson.bugs.url}`;
+exports.HELP_INFO_MESSAGE = HELP_INFO_MESSAGE;
 var ERROR_MESSAGES = [];
 exports.ERROR_MESSAGES = ERROR_MESSAGES;
 ERROR_MESSAGES[0] = `File ($1) doesn't exist but specified in ${LOADER_NAME} options with \n` + `  condition ${LOADER_REPLACEMENT_CONDITIONS[1]} or '${LOADER_REPLACEMENT_CONDITIONS[2]}'. \n` + `  Perhaps this is due replacement isn't full path. Make sure that file exists and replacement\n` + `  option is full path to file.\n` + `  ${HELP_INFO_MESSAGE}`;

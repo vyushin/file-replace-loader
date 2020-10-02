@@ -155,7 +155,9 @@ export default function(source) {
   if (condition(options.condition).oneOf(LOADER_REPLACEMENT_CONDITIONS[1], LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
     const replacementPath = replacement(this.resourcePath);
-    if (replacementPath === null) {
+    const isTheSamePath = replacementPath === this.resourcePath;
+    if (replacementPath === null || isTheSamePath) {
+      isTheSamePath && progress(`Skip replace because replacement returned the same path [${replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
     if (existsSync(replacementPath)) {
@@ -178,7 +180,9 @@ export default function(source) {
   if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress(`Trying replace by condition '${options.condition}'`);
     const replacementPath = replacement(this.resourcePath);
-    if (replacementPath === null) {
+    const isTheSamePath = replacementPath === this.resourcePath;
+    if (replacementPath === null || isTheSamePath) {
+      isTheSamePath && progress(`Skip replace because replacement returned the same path [${replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
     if (existsSync(replacementPath)) {
@@ -198,7 +202,9 @@ export default function(source) {
   if (condition(options.condition).is(LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress(`Trying replace by condition '${options.condition}'`);
     const replacementPath = replacement(this.resourcePath);
-    if (replacementPath === null) {
+    const isTheSamePath = replacementPath === this.resourcePath;
+    if (replacementPath === null || isTheSamePath) {
+      isTheSamePath && progress(`Skip replace because replacement returned the same path [${replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
     if (existsSync(replacementPath)) {
