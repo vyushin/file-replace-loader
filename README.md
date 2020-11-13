@@ -5,6 +5,18 @@
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
+## Table of contents
+
+* [Features](#features)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Multiple replace](#multiple-replace)
+* [Using with binary files](#using-with-binary-files)
+* [Using with other loaders](#using-with-other-loaders)
+* [Loader options](#loader-options)
+* [Contributing](#contributing)
+* [License](#license)
+
 ## Features
 
 * Compatibility with webpack 3.x, 4.x, 5.x;
