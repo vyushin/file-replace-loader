@@ -149,9 +149,13 @@ function _default(source) {
   var options = getOptions(this);
   var isAsync = options && options.async === true;
   var callback = isAsync === true && this.async() || null;
+  var context = this.context;
 
   var replacement = function replacement(resourcePath) {
-    return options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement;
+    var opts = {
+      context
+    };
+    return options.replacement instanceof Function ? options.replacement(resourcePath, opts) || null : options.replacement;
   };
 
   var progress = progressFactory(options);
