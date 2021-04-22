@@ -118,9 +118,11 @@ export default function(source) {
   const options = getOptions(this);
   const isAsync = options && options.async === true;
   const callback = isAsync === true && this.async() || null;
-  const replacement = (resourcePath) => (
-    options.replacement instanceof Function ? options.replacement(resourcePath) || null : options.replacement
-  );
+  const context = this.context;
+  const replacement = (resourcePath) => {
+    const opts = { context };
+    return options.replacement instanceof Function ? options.replacement(resourcePath, opts) || null : options.replacement
+  };
   const progress = progressFactory(options);
 
   /**

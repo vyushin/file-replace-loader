@@ -1,3 +1,7 @@
+## 1.4.0 (23 Apr, 2021)
+
+* [#19](https://github.com/vyushin/file-replace-loader/issues/19) Provide context to replacement function
+
 ## 1.3.1 (02 Oct, 2020)
 
 * Fix bug when the loader works idle if replacement returns the same path
