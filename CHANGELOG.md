@@ -1,3 +1,6 @@
+## 1.4.1 (April 21, 2024)
+* Add funding info
+
 ## 1.4.0 (23 Apr, 2021)
 
 * [#19](https://github.com/vyushin/file-replace-loader/issues/19) Provide context to replacement function
