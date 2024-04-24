@@ -5,6 +5,13 @@
 
 file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
 
+> **file-replace-loader is free** and will always remain free <br/>
+> A simple and quick way to support the project is to **buy me a coffee**. <br/>It will take no more than 5 minutes and will allow the project to keep going
+
+<a href="https://buymeacoffee.com/vyushin" target="_blank" title="Buy me a coffee">
+  <img height="50" alt="Buy me a coffee" src="https://github.com/vyushin/file-replace-loader/assets/8006957/99ce6635-4489-4073-bcf9-da8b72aa4cd7">
+</a>
+
 ## Table of contents
 
 * [Features](#features)
