@@ -3,7 +3,7 @@
 [![npm downloads](https://img.shields.io/npm/d18m/file-replace-loader)](https://www.npmjs.com/package/file-replace-loader)
 [![license](https://img.shields.io/github/license/vyushin/file-replace-loader.svg?style=flat-square)](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)
 
-file-replace-loader is webpack loader that allows you replace files in compile time by some condition.
+file-replace-loader is a webpack loader that allows you to replace files at compile time based on conditions.
 
 > **file-replace-loader is free** and will always remain free <br/>
 > A simple and quick way to support the project is to **buy me a coffee**. <br/>It will take no more than 5 minutes and will allow the project to keep going
@@ -27,8 +27,8 @@ file-replace-loader is webpack loader that allows you replace files in compile t
 ## Features
 
 * Compatibility with webpack 3.x, 4.x, 5.x;
-* Support watch webpack mode;
-* Replace files in compile time without change source files;
+* Supports webpack watch mode;
+* Replace files at compile time without changing source files;
 * Multiple replacement;
 * Sync and async modes;
 * Compatibility with other loaders;
@@ -63,10 +63,10 @@ module.exports = {
 }
 ```
 
-This example rule replaces all of imports `/\.config.js$/` to `config.local.js` file, <br/>if replacement exists (condition `if-replacement-exists`).
+This rule replaces matching `/\.config\.js$/` files with `config.local.js`, <br/>if replacement exists (condition `if-replacement-exists`).
 
-After this build a bundle file will contain code from `config.local.js` and original sources
-won't changed.
+After the build, the bundle will contain code from `config.local.js`, while original sources
+won't be changed.
 
 ## Multiple replace
 
@@ -74,11 +74,11 @@ To describe replace rules for two or more files you can use function as replacem
 
 How does it work?
 1. Webpack runs file-replace-loader according to `test` rule, `include` and `exclude` rule options;
-2. file-replace-loader looks on `replacement` option. If it is string then the loader just replace a file. If it is a function
-then file-replace-loader checking what it returns. If the function returns a path to file then the loader
-replaces, if returns nothing then current match skips.
-3. If `replacement` function returns a path then file-replace-loader looks to `condition`. If condition is `always` then it replace every match. If `condition` is
-`if-replacement-exists` then loader checking existing file, etc;
+2. file-replace-loader checks the `replacement` option. If it is a string, the loader replaces the file. If it is a function,
+then file-replace-loader checks what it returns. If the function returns a file path, the loader
+replaces the file; if it returns nothing, the current match is skipped.
+3. If the `replacement` function returns a path, file-replace-loader checks `condition`. If condition is `always`, it replaces every match. If `condition` is
+`if-replacement-exists`, the loader checks whether the file exists, etc;
 
 For example:
 
@@ -108,9 +108,9 @@ module.exports = {
 }
 ```
 
-file-replace-loader passes to `replacement` function `resourcePath` for every matching.
-file-replace-loader doesn't care what developer does with this path but if `repalcement` function returns a new path then file-replace-loader replaces file.
-If `replacement` function returns nothing then file-replace-loading skip replace for current `resourcePath`.
+file-replace-loader passes `resourcePath` to the `replacement` function for every matched file.
+file-replace-loader does not enforce how this path is processed, but if the `replacement` function returns a new path, file-replace-loader replaces the file.
+If the `replacement` function returns nothing, file-replace-loader skips replacement for the current `resourcePath`.
 
 Example with mapping:
 
@@ -140,12 +140,12 @@ module.exports = {
 }
 ```
 
-**NOTE:** Make shure that all replacement files contains necessary imports and exports 
+**NOTE:** Make sure that all replacement files contain the necessary imports and exports 
 that other files are expecting.
 
 ## Using with binary files
 
-file-replace-loader allows replace binary files. <br/>For example:
+file-replace-loader allows replacing binary files. <br/>For example:
 
 ```javascript
 //webpack.config.js
@@ -176,7 +176,7 @@ module.exports = {
 
 ## Using with other loaders
 
-file-replace-loader must executes before other loaders. This means that in webpack config file the loader must be last in list. <br/>For example:
+file-replace-loader must execute before other loaders. This means that in a webpack config file the loader must be last in the list. <br/>For example:
 
 ```javascript
 //webpack.config.js
@@ -205,7 +205,7 @@ module.exports = {
 }
 ```
 
-Above is correct example. file-replace-loader will executed before other loaders.
+The example above is correct. file-replace-loader will be executed before other loaders.
 <br/>Let's see incorrect usage:
 
 ```javascript
@@ -213,7 +213,7 @@ Above is correct example. file-replace-loader will executed before other loaders
 
 const { resolve } = require('path');
 
-// Error, because file-replace-loader will be execute after other loaders
+// Error, because file-replace-loader will be executed after other loaders
 
 module.exports = {
   //...
@@ -235,8 +235,8 @@ module.exports = {
 }
 ```
 
-In incorrect example above file-replace-loader first in rule list. 
-This case throw an error because file-replace-loader should be last in list.
+In the incorrect example above, file-replace-loader is first in the rule list. 
+This case throws an error because file-replace-loader should be last in the list.
 
 ## Loader options
 
@@ -248,7 +248,7 @@ This case throw an error because file-replace-loader should be last in list.
 | `progress`<br/>Progress output        | `boolean`       | no             | `IS_DEBUG_MODE == true or IS_PROGRESS_MODE == true`                  | `true`,<br/>`false`
 
 ## Contributing
-See [contributing](https://github.com/vyushin/file-replace-loader/blob/master/CONTRIBUTING.md) guideline.
+See the [contributing](https://github.com/vyushin/file-replace-loader/blob/master/CONTRIBUTING.md) guideline.
 
 ## License
 [MIT LICENSE](https://github.com/vyushin/file-replace-loader/blob/master/LICENSE)

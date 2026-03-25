@@ -1,5 +1,6 @@
-## 1.4.3 (?)
+## 1.4.3 (March 25, 2026)
 * Add integration webpack tests for loader error messages and introduce a private Jest-based test project in `test/`
+* Improve README wording, grammar, and typo fixes
 
 ## 1.4.1 (April 21, 2024)
 * Add funding info
