@@ -5,17 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = _default;
 exports.raw = void 0;
-
 var _loaderUtils = _interopRequireDefault(require("loader-utils"));
-
 var _schemaUtils = _interopRequireDefault(require("schema-utils"));
-
 var _fs = require("fs");
-
 var _constants = require("./constants");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * File replace loader script
  * {@link https://github.com/vyushin/file-replace-loader/blob/master/src/index.js}
@@ -33,14 +27,13 @@ function Exception(options) {
   Error.call(this);
   Error.captureStackTrace(this, Exception);
 }
-
 Exception.prototype = Object.create(Error.prototype);
+
 /**
  * Format schema error to the loader format
  * @param {Object} e Error object
  * @return {Object}
  */
-
 function prepareErrorSchemaMessage(e) {
   var message = '';
   e.errors && e.errors.forEach(function (error) {
@@ -53,13 +46,12 @@ function prepareErrorSchemaMessage(e) {
   e.message = `${message ? `${_constants.ERROR_TYPES[0]} ${message}\n` : e.message} ${_constants.HELP_INFO_MESSAGE}`;
   return e;
 }
+
 /**
  * Progress function factory
  * @param {Object} options Options object
  * @return {Function} Progress function
  */
-
-
 var progressFactory = function progressFactory(_ref) {
   var progress = _ref.progress;
   if (!progress) return function () {};
@@ -68,14 +60,12 @@ var progressFactory = function progressFactory(_ref) {
    * Print progress message
    * @param {String} message
    */
-
   return function (message) {
     var newLine = isFirstMessage === true && '\n' || '';
     console.info(`${newLine}[${_constants.LOADER_NAME}]: ${message}`);
     isFirstMessage = false;
   };
 };
-
 function readFile(path, isAsync, callback) {
   if (isAsync) {
     return (0, _fs.readFile)(path, null, function (err, content) {
@@ -91,27 +81,24 @@ function readFile(path, isAsync, callback) {
     });
   }
 }
-
 function getOptions(loaderContext) {
   var hasLoaderContextGetOptionsFunc = typeof loaderContext.getOptions === 'function'; // Since Webpack 5, getOptions function is part of loader context
-
   var options = hasLoaderContextGetOptionsFunc ? loaderContext.getOptions(_constants.LOADER_OPTIONS_SCHEMA) : _loaderUtils.default.getOptions(loaderContext);
   var properties = Object.keys(_constants.LOADER_OPTIONS_SCHEMA.properties) || [];
   var defaultOptions = {};
   properties.forEach(function (key) {
     return defaultOptions[key] = _constants.LOADER_OPTIONS_SCHEMA.properties[key].default;
   });
-  var result = Object.assign({}, defaultOptions, options); //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
-
+  var result = Object.assign({}, defaultOptions, options);
+  //result.replacement && (result.replacement = resolve(loaderContext.context, result.replacement));
   return result;
 }
+
 /**
  * Checks the condition by compliance
  * @param {String} condition
  * @return {Proof}
  */
-
-
 function condition(condition) {
   function Proof(condition) {
     this.oneOf = function () {
@@ -120,14 +107,13 @@ function condition(condition) {
         return arg === condition;
       });
     };
-
     this.is = function () {
       return condition === arguments[0];
     };
   }
-
   return new Proof(condition);
 }
+
 /** Enable raw input from webpack
  *
  * This asks webpack to provide us a Buffer instead of a String.
@@ -136,49 +122,41 @@ function condition(condition) {
  * the input unmodified.
  *
  */
+var raw = exports.raw = true;
 
-
-var raw = true;
 /**
  * File Replace Loader function
  */
-
-exports.raw = raw;
-
 function _default(source) {
   var options = getOptions(this);
   var isAsync = options && options.async === true;
   var callback = isAsync === true && this.async() || null;
   var context = this.context;
-
   var replacement = function replacement(resourcePath) {
     var opts = {
       context
     };
     return options.replacement instanceof Function ? options.replacement(resourcePath, opts) || null : options.replacement;
   };
-
   var progress = progressFactory(options);
+
   /**
    * Validate loader options before its work
    */
-
   try {
     progress(`Validate options`);
     (0, _schemaUtils.default)(_constants.LOADER_OPTIONS_SCHEMA, options);
   } catch (e) {
     throw prepareErrorSchemaMessage(e);
   }
+
   /**
    * Checking using with other loaders
    */
-
-
   if (this.loaders.length > 1) {
     progress(`Checking using with other loaders`);
     var firstLoader = this.loaders[this.loaders.length - 1];
     var isNotFirst = firstLoader.path !== _constants.MAIN_LOADER_FILE;
-
     if (isNotFirst) {
       throw new Exception({
         title: _constants.ERROR_TYPES[3],
@@ -186,21 +164,18 @@ function _default(source) {
       });
     }
   }
+
   /**
    * If condition is 'always' or true
    */
-
-
   if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[1], _constants.LOADER_REPLACEMENT_CONDITIONS[2])) {
     progress(`Trying replace by condition '${options.condition}'`);
     var replacementPath = replacement(this.resourcePath);
     var isTheSamePath = replacementPath === this.resourcePath;
-
     if (replacementPath === null || isTheSamePath) {
       isTheSamePath && progress(`Skip replace because replacement returned the same path [${replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
-
     if ((0, _fs.existsSync)(replacementPath)) {
       progress(`Replace [${this.resourcePath}] -> [${replacementPath}]`);
       this.addDependency(replacementPath);
@@ -214,23 +189,18 @@ function _default(source) {
       });
     }
   }
+
   /**
    * If condition is 'if-replacement-exists'
    */
-
-
   if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[4])) {
     progress(`Trying replace by condition '${options.condition}'`);
-
     var _replacementPath = replacement(this.resourcePath);
-
     var _isTheSamePath = _replacementPath === this.resourcePath;
-
     if (_replacementPath === null || _isTheSamePath) {
       _isTheSamePath && progress(`Skip replace because replacement returned the same path [${_replacementPath}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
-
     if ((0, _fs.existsSync)(_replacementPath)) {
       progress(`Replace [${this.resourcePath}] -> [${_replacementPath}]`);
       this.addDependency(_replacementPath);
@@ -241,26 +211,20 @@ function _default(source) {
       return isAsync ? callback(null, source) : source;
     }
   }
+
   /**
    * If condition is 'if-source-is-empty'
    */
-
-
   if (condition(options.condition).is(_constants.LOADER_REPLACEMENT_CONDITIONS[5])) {
     progress(`Trying replace by condition '${options.condition}'`);
-
     var _replacementPath2 = replacement(this.resourcePath);
-
     var _isTheSamePath2 = _replacementPath2 === this.resourcePath;
-
     if (_replacementPath2 === null || _isTheSamePath2) {
       _isTheSamePath2 && progress(`Skip replace because replacement returned the same path [${_replacementPath2}]`);
       return isAsync ? callback(null, source) : source; // Skip replacement
     }
-
     if ((0, _fs.existsSync)(_replacementPath2)) {
       var stat = (0, _fs.statSync)(this.resourcePath);
-
       if (stat.size === 0) {
         progress(`Replace [${this.resourcePath}] -> [${_replacementPath2}]`);
         this.addDependency(_replacementPath2);
@@ -278,15 +242,13 @@ function _default(source) {
       });
     }
   }
+
   /**
    * If condition is 'never' or false
    */
-
-
   if (condition(options.condition).oneOf(_constants.LOADER_REPLACEMENT_CONDITIONS[0], _constants.LOADER_REPLACEMENT_CONDITIONS[3])) {
     progress(`Skip replacement because condition is '${options.condition}'`);
     return isAsync ? callback(null, source) : source;
   }
 }
-
 ;

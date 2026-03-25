@@ -1,0 +1,14 @@
+{
+  "name": "file-replace-loader-tests",
+  "private": true,
+  "description": "Integration tests for file-replace-loader ERROR_MESSAGES",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "webpack": "^5.90.0",
+    "file-replace-loader": "file:.."
+  }
+}
+

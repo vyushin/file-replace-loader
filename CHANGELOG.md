@@ -1,3 +1,6 @@
+## 1.4.3 (?)
+* Add integration webpack tests for loader error messages and introduce a private Jest-based test project in `test/`
+
 ## 1.4.1 (April 21, 2024)
 * Add funding info
 
